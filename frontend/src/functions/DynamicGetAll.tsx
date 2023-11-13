@@ -1,8 +1,6 @@
-import { useState, useEffect } from 'react';
+import {useEffect} from "react";
 
-export default function DynamicGetAll(route: string) {
-
-    const [data, setData] = useState([]);
+export default function DynamicGetAll(route: string, setData: any) {
 
     const url: string = 'http://localhost:8080/api/' + route;
 
@@ -15,7 +13,5 @@ export default function DynamicGetAll(route: string) {
             .then(data => setData(data))
             .catch(err => console.log("ERROR: " + err))
     }, [route]);
-
-    return data;
 
 }

@@ -1,44 +1,46 @@
-
-import {Express, Request, Response} from "express";
 import * as express from "express";
+import {Express, Request, Response} from "express";
 import * as path from "path";
 import * as mysql from "mysql";
 import cors from "cors";
+import bodyParser from "body-parser";
 
 export class Server {
 
     private app: Express;
     private db: mysql.Connection;
+    private tables: string[] = [];
 
     constructor(app: Express) {
         this.app = app;
         this.app.use(cors());
+        this.app.use(bodyParser.json());
         this.initDB();
+        this.tables =
+            [
+                "AddToList", "Age", "Cost", "Genre", "Media", "Movie",
+                "Season", "StreamingService", "StreamingUser", "Studio",
+                "SubscribesTo", "Subscription", "TVShow", "WatchHistory", "Watchlist"
+            ];
 
         this.app.use(express.static(path.resolve("./") + "/build/frontend"));
 
         this.apiRoute();
 
-        this.dynamicRoute("/api/addtolist", "SELECT * FROM AddToList");
-        this.dynamicRoute("/api/age", "SELECT * FROM Age");
-        this.dynamicRoute("/api/cost", "SELECT * FROM Cost");
-        this.dynamicRoute("/api/genre", "SELECT * FROM Genre");
-        this.dynamicRoute("/api/media", "SELECT * FROM Media");
-        this.dynamicRoute("/api/movie", "SELECT * FROM Movie");
-        this.dynamicRoute("/api/season", "SELECT * FROM Season");
-        this.dynamicRoute("/api/streamingservice", "SELECT * FROM StreamingService");
-        this.dynamicRoute("/api/streaminguser", "SELECT * FROM StreamingUser");
-        this.dynamicRoute("/api/studio", "SELECT * FROM Studio");
-        this.dynamicRoute("/api/subscribesTo", "SELECT * FROM SubscribesTo");
-        this.dynamicRoute("/api/subscription", "SELECT * FROM Subscription");
-        this.dynamicRoute("/api/tvshow", "SELECT * FROM TVShow");
-        this.dynamicRoute("/api/watchhistory", "SELECT * FROM WatchHistory");
-        this.dynamicRoute("/api/watchlist", "SELECT * FROM Watchlist");
+        // Dynamic routes for each table
+        this.tables.map((table: string) => {
+            let query: string = "SELECT * FROM " + table;
+            let route: string = "/api/" + table.toLowerCase();
+            let addRoute: string = "/api/" + table.toLowerCase() + "/add";
 
+            this.dynamicRoute(route, query)
+            this.dynamicAddRoute(addRoute, table)
 
-        this.app.get("*", (req: Request, res: Response): void => {
-            res.sendFile(path.resolve("./") + "/build/frontend/index.html");
         });
+
+        // this.app.get("*", (req: Request, res: Response): void => {
+        //     res.sendFile(path.resolve("./") + "/build/frontend/index.html");
+        // });
     }
 
 
@@ -73,6 +75,8 @@ export class Server {
         });
     }
 
+    // /api/:table
+    // ******************************************************
     private dynamicRoute(route: string, query: string): void {
         this.app.get(route, (req: Request, res: Response): void => {
             this.db.query(query, (err, result) => {
@@ -83,6 +87,36 @@ export class Server {
                 }
             });
         });
+    }
+
+    private dynamicAddRoute(route: string, table: string): void {
+        this.app.post(route, (req: Request, res: Response): void => {
+            let query: string = this.createAddQuery(table, req.body);
+            this.db.query(query, (err, result) => {
+                if (err) {
+                    console.error("ERROR: " + err);
+                } else {
+                    res.json(result);
+                }
+            });
+        });
+    }
+
+    private createAddQuery(table: string, params: any): string {
+        let query: string = "INSERT INTO " + table + " VALUES (";
+        let i: number = 0;
+        for (let key in params) {
+            if (params.hasOwnProperty(key)) {
+                if (i === 0) {
+                    query += "'" + params[key] + "'";
+                } else {
+                    query += ", '" + params[key] + "'";
+                }
+                i++;
+            }
+        }
+        query += ")";
+        return query;
     }
 
 }

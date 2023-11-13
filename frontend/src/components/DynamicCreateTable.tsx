@@ -1,8 +1,5 @@
-import DynamicGetAll from "../functions/DynamicGetAll.tsx";
 
-export default function DynamicCreateTable({route} : {route: string}) {
-
-    const data= DynamicGetAll(route);
+export default function DynamicCreateTable({route, data} : {route: string, data: any}) {
 
     let headers: string[] = data.map((item: any) => Object.keys(item)).flat();
     let uniqueHeaders: string[] = [...new Set(headers)];
