@@ -1,9 +1,8 @@
-create table Age
-(
-    userID int not null
-        primary key,
-    age    int null,
-    constraint age_ibfk_1
-        foreign key (userID) references streamingservice.StreamingUser (userID)
+DROP TABLE Age;
+
+CREATE TABLE Age (
+    birthday DATE PRIMARY KEY,
+    age INT,
+    FOREIGN KEY (Birthday) REFERENCES StreamingUser(Birthday)
 );
 

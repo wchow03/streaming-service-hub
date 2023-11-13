@@ -18,8 +18,23 @@ export class Server {
         this.app.use(express.static(path.resolve("./") + "/build/frontend"));
 
         this.apiRoute();
-        this.mediaRoute();
-        this.studioRoute();
+
+        this.dynamicRoute("/api/addtolist", "SELECT * FROM AddToList");
+        this.dynamicRoute("/api/age", "SELECT * FROM Age");
+        this.dynamicRoute("/api/cost", "SELECT * FROM Cost");
+        this.dynamicRoute("/api/genre", "SELECT * FROM Genre");
+        this.dynamicRoute("/api/media", "SELECT * FROM Media");
+        this.dynamicRoute("/api/movie", "SELECT * FROM Movie");
+        this.dynamicRoute("/api/season", "SELECT * FROM Season");
+        this.dynamicRoute("/api/streamingservice", "SELECT * FROM StreamingService");
+        this.dynamicRoute("/api/streaminguser", "SELECT * FROM StreamingUser");
+        this.dynamicRoute("/api/studio", "SELECT * FROM Studio");
+        this.dynamicRoute("/api/subscribesTo", "SELECT * FROM SubscribesTo");
+        this.dynamicRoute("/api/subscription", "SELECT * FROM Subscription");
+        this.dynamicRoute("/api/tvshow", "SELECT * FROM TVShow");
+        this.dynamicRoute("/api/watchhistory", "SELECT * FROM WatchHistory");
+        this.dynamicRoute("/api/watchlist", "SELECT * FROM Watchlist");
+
 
         this.app.get("*", (req: Request, res: Response): void => {
             res.sendFile(path.resolve("./") + "/build/frontend/index.html");
@@ -58,13 +73,8 @@ export class Server {
         });
     }
 
-    // /api/media
-    // ******************************************************
-    private mediaRoute(): void {
-        this.app.get("/api/media", (req: Request, res: Response): void => {
-
-            const query: string = "SELECT * FROM Media";
-
+    private dynamicRoute(route: string, query: string): void {
+        this.app.get(route, (req: Request, res: Response): void => {
             this.db.query(query, (err, result) => {
                 if (err) {
                     console.error("ERROR: " + err);
@@ -72,25 +82,6 @@ export class Server {
                     res.json(result);
                 }
             });
-
-        });
-    }
-
-    // /api/studio
-    // ******************************************************
-    private studioRoute(): void {
-        this.app.get("/api/studio", (req: Request, res: Response): void => {
-
-            const query: string = "SELECT * FROM Studio";
-
-            this.db.query(query, (err, result) => {
-                if (err) {
-                    console.error("ERROR: " + err);
-                } else {
-                    res.json(result);
-                }
-            });
-
         });
     }
 
