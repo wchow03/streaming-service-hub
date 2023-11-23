@@ -33,8 +33,10 @@ export class Server {
             let route: string = "/api/" + table.toLowerCase();
             let addRoute: string = "/api/" + table.toLowerCase() + "/add";
 
-            this.dynamicRoute(route, query)
-            this.dynamicAddRoute(addRoute, table)
+            this.dynamicRoute(route, query);
+            this.dynamicAddRoute(addRoute, table);
+
+            // this.registerLoginRoutes();
 
         });
 

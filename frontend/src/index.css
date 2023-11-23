@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.loginForm {
+    border: 5px solid white;
+    border-radius: 10px;
+    padding: 20px;
+}
