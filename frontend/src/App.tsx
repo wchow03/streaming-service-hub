@@ -12,7 +12,9 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import {Routes, Route} from "react-router-dom";
 import Register from "./components/Register.tsx";
 import HomePage from "./components/HomePage.tsx";
-import PrivateRoute from "./functions/PriavteRoutes.tsx";
+import ProtectedRoutes from "./functions/ProtectedRoutes.tsx";
+import WatchList from "./components/WatchList.tsx";
+import WatchHistory from "./components/WatchHistory.tsx";
 
 
 function App() {
@@ -40,11 +42,11 @@ function App() {
             <Route path={'/'} element={<Login />}></Route>
             <Route path={'/register'} element={<Register />}></Route>
 
-            <Route path = {'/home'} element={
-                <PrivateRoute>
-                    <HomePage />
-                </PrivateRoute>
-            }/>
+            <Route element={<ProtectedRoutes />}>
+                <Route path={'/home'} element={<HomePage />}></Route>
+                <Route path={'/watchList'} element={<WatchList />}></Route>
+                <Route path={'/watchHistory'} element={<WatchHistory />}></Route>
+            </Route>
         </Routes>
     );
 }

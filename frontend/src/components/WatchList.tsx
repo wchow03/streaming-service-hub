@@ -1,11 +1,7 @@
 import {useEffect, useState} from "react";
+import {HomeUser} from "./HomePage.tsx";
 
-export interface HomeUser {
-    username: string,
-    email: string
-}
-
-export default function HomePage() {
+export default function WatchList() {
     const [homeUser, setHomeUser] = useState<HomeUser>();
 
     useEffect(() => {
@@ -25,7 +21,7 @@ export default function HomePage() {
                     <a className={"navbar-brand text-white"} href={"/"}>Log out</a>
                 </div>
             </nav>
-            <h1 className={"h1 text-white text-center"}>Home Page</h1>
+            <h1 className={"h1 text-white text-center"}>Watch Later Page</h1>
         </>
     );
 }
