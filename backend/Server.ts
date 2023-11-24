@@ -41,6 +41,7 @@ export class Server {
         });
 
         this.registerRoute();
+        this.loginRoute();
 
         // this.app.get("*", (req: Request, res: Response): void => {
         //     res.sendFile(path.resolve("./") + "/build/frontend/index.html");
@@ -124,19 +125,31 @@ export class Server {
     }
 
     private registerRoute(): void {
-        this.app.post("/register", (req: Request, res: Response): void => {
+        this.app.post("/api/register", (req: Request, res: Response): void => {
             const username = req.body.username;
             const password = req.body.password;
             const email = req.body.email;
             const birthday = req.body.birthday;
 
-            this.db.query("INSERT INTO streaminguser(username, password, email, birthday) VALUES (?,?,?,?)", [username, password, email, birthday], (err, result) => {
+            this.db.query("INSERT INTO StreamingUser(username, password, email, birthday) VALUES (?,?,?,?)", [username, password, email, birthday], (err, result) => {
                 if (err) {
                     console.log(err);
                 } else {
                     res.json(result);
                 }
             })
+        });
+    }
+
+    private loginRoute(): void {
+        this.app.get("/api/users", (req: Request, res: Response): void => {
+           this.db.query("SELECT username, email, password FROM StreamingUser", (err, result) => {
+              if (err) {
+                  console.log(err);
+              } else {
+                  res.json(result);
+              }
+           });
         });
     }
 

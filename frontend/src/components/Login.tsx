@@ -1,15 +1,44 @@
 import "bootstrap/dist/css/bootstrap.min.css";
-import {useState} from "react";
-import {Link} from "react-router-dom";
+import {useEffect, useState} from "react";
+import {Link, useNavigate} from "react-router-dom";
+
+export interface User {
+    username: string,
+    password: string,
+    email: string
+}
 
 export default function Login() {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+    window.localStorage.clear(); // clears local storage for new user
 
-    const handleSubmit = (e: any) => {
+    const [email, setEmail] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
+    const [users, setUsers] = useState<User[]>([]);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        fetch("http://localhost:8080/api/users")
+            .then(res => res.json())
+            .then((data) => setUsers(data))
+            .catch(() => alert("Error getting users"));
+    }, []);
+
+    function handleSubmit(e: any): void {
         e.preventDefault();
-        console.log(email);
-        console.log(password);
+        const emails: string[] = users.map(user => user.email);
+        if (emails.includes(email)) {
+            const foundUser = users.find(user => user.email === email);
+            console.log(foundUser);
+            if (foundUser && foundUser.password === password) {
+                window.localStorage.setItem("User", JSON.stringify(foundUser.username));
+                window.localStorage.setItem("Email", JSON.stringify(foundUser.email));
+                navigate("/home");
+            } else {
+                alert("Wrong Password");
+            }
+        } else {
+            alert("Email not found");
+        }
     }
 
     return (

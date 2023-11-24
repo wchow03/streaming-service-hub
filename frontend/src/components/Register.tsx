@@ -1,4 +1,4 @@
-import {useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {useState} from "react";
 
 export default function Register() {
@@ -16,7 +16,7 @@ export default function Register() {
             email: email,
             birthday: birthday
         }
-        fetch("http://localhost:8080/register", {
+        fetch("http://localhost:8080/api/register", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -56,6 +56,7 @@ export default function Register() {
                 </div>
 
                 <button type={"submit"} className={"btn btn-primary w-100 mb-3"}>Register</button>
+                <Link to={"/"} className={"btn btn-secondary w-100"}>Back to Log in</Link>
             </form>
         </div>
     );
