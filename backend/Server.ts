@@ -4,6 +4,7 @@ import * as path from "path";
 import * as mysql from "mysql";
 import cors from "cors";
 import bodyParser from "body-parser";
+import * as console from "console";
 
 export class Server {
 
@@ -14,6 +15,7 @@ export class Server {
     constructor(app: Express) {
         this.app = app;
         this.app.use(cors());
+        this.app.use(express.json());
         this.app.use(bodyParser.json());
         this.initDB();
         this.tables =
@@ -36,9 +38,9 @@ export class Server {
             this.dynamicRoute(route, query);
             this.dynamicAddRoute(addRoute, table);
 
-            // this.registerLoginRoutes();
-
         });
+
+        this.registerRoute();
 
         // this.app.get("*", (req: Request, res: Response): void => {
         //     res.sendFile(path.resolve("./") + "/build/frontend/index.html");
@@ -56,7 +58,7 @@ export class Server {
         this.db = mysql.createConnection({
             host: "127.0.0.1",
             user: "root",
-            password: "admin",
+            password: "%mysqlroot%",
             database: "StreamingService"
         });
 
@@ -119,6 +121,23 @@ export class Server {
         }
         query += ")";
         return query;
+    }
+
+    private registerRoute(): void {
+        this.app.post("/register", (req: Request, res: Response): void => {
+            const username = req.body.username;
+            const password = req.body.password;
+            const email = req.body.email;
+            const birthday = req.body.birthday;
+
+            this.db.query("INSERT INTO streaminguser(username, password, email, birthday) VALUES (?,?,?,?)", [username, password, email, birthday], (err, result) => {
+                if (err) {
+                    console.log(err);
+                } else {
+                    res.json(result);
+                }
+            })
+        });
     }
 
 }

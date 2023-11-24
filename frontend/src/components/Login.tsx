@@ -1,8 +1,6 @@
-import FloatingLabel from 'react-bootstrap/FloatingLabel';
-import Form from 'react-bootstrap/Form';
-import {Button, Col, Row} from "react-bootstrap";
-import Container from "react-bootstrap/Container";
+import "bootstrap/dist/css/bootstrap.min.css";
 import {useState} from "react";
+import {Link} from "react-router-dom";
 
 export default function Login() {
     const [email, setEmail] = useState("");
@@ -15,36 +13,24 @@ export default function Login() {
     }
 
     return (
-        <Container>
-            <Row>
-                <h1 className={"h1 text-white font-bold text-center"}>Streaming Service</h1>
-            </Row>
-            <Row>
-                <Container className={"min-vh-100 d-flex justify-content-center align-items-center"}>
-                    <Form className={"loginForm"} onSubmit={handleSubmit}>
-                        <Form.Group className="mb-3" controlId="formBasicEmail">
-                            <FloatingLabel
-                                controlId="floatingInput"
-                                label="Email address"
-                                className="mb-3"
-                            >
-                                <Form.Control type="email" placeholder="name@example.com"
-                                              onChange={(e) => setEmail(e.target.value)}/>
-                            </FloatingLabel>
-                        </Form.Group>
+        <div className={"d-flex justify-content-center align-items-center min-vh-100"}>
+            <h1 className={"h1 text-white text-center mr-20"}>Streaming Service</h1>
+            <form onSubmit={handleSubmit} className={"loginForm"}>
+                <div className={"form-floating mb-3"}>
+                    <input type={"email"} required className={"form-control"} id={"floatingEmail"} placeholder={"bob123@gmail.com"}
+                            onChange={(e) => setEmail(e.target.value)}/>
+                    <label htmlFor={"floatingEmail"}>Email</label>
+                </div>
 
-                        <Form.Group className="mb-3" controlId="formBasicPassword">
-                            <FloatingLabel controlId="floatingPassword" label="Password">
-                                <Form.Control type="password" placeholder="Password"
-                                              onChange={(e) => setPassword(e.target.value)}/>
-                            </FloatingLabel>
-                        </Form.Group>
-                        <Button className={"justify-content-center bg-blue-500"} variant="primary" type="submit">
-                            Login
-                        </Button>
-                    </Form>
-                </Container>
-            </Row>
-        </Container>
+                <div className={"form-floating mb-3"}>
+                    <input type={"password"} required className={"form-control"} id={"floatingPassword"} placeholder={"password"}
+                           onChange={(e) => setPassword(e.target.value)}/>
+                    <label htmlFor={"floatingPassword"}>Password</label>
+                </div>
+
+                <button type={"submit"} className={"btn btn-primary w-100 mb-3"}>Log in</button>
+                <Link to={"/register"} className={"btn btn-primary w-100"}>Register</Link>
+            </form>
+        </div>
     );
 }

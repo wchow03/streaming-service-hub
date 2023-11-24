@@ -1,14 +1,16 @@
 import 'tailwindcss/tailwind.css';
-import DynamicCreateTable from "./components/DynamicCreateTable.tsx";
-import SelectTable from "./components/SelectTable.tsx";
-
-import DynamicGetAll from "./functions/DynamicGetAll.tsx";
-
-import {useState} from 'react';
-import AddForm from "./components/AddForm.tsx";
+// import DynamicCreateTable from "./components/DynamicCreateTable.tsx";
+// import SelectTable from "./components/SelectTable.tsx";
+//
+// import DynamicGetAll from "./functions/DynamicGetAll.tsx";
+//
+// import {useState} from 'react';
+// import AddForm from "./components/AddForm.tsx";
 
 import Login from "./components/Login.tsx";
 import "bootstrap/dist/css/bootstrap.min.css";
+import {Routes, Route} from "react-router-dom";
+import Register from "./components/Register.tsx";
 
 
 function App() {
@@ -31,9 +33,10 @@ function App() {
     //   </div>
     // );
     return (
-        <>
-            <Login />
-        </>
+        <Routes>
+            <Route path={'/'} element={<Login />}></Route>
+            <Route path={'/register'} element={<Register />}></Route>
+        </Routes>
     );
 }
 

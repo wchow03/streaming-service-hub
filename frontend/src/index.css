@@ -3,7 +3,8 @@
 @tailwind utilities;
 
 .loginForm {
-    border: 5px solid white;
+    /*border: 5px solid white;*/
     border-radius: 10px;
-    padding: 20px;
+    padding: 30px;
+    background-color: #252525;
 }
