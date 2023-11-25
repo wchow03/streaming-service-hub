@@ -15,6 +15,11 @@ import HomePage from "./components/HomePage.tsx";
 import ProtectedRoutes from "./functions/ProtectedRoutes.tsx";
 import WatchList from "./components/WatchList.tsx";
 import WatchHistory from "./components/WatchHistory.tsx";
+import Netflix from "./components/StreamingServices/Netflix.tsx";
+import DisneyPlus from "./components/StreamingServices/DisneyPlus.tsx";
+import PrimeVideo from "./components/StreamingServices/PrimeVideo.tsx";
+import Max from "./components/StreamingServices/Max.tsx";
+import CraveTV from "./components/StreamingServices/CraveTV.tsx";
 
 
 function App() {
@@ -39,13 +44,20 @@ function App() {
 
     return (
         <Routes>
+            {/*Below are the public routes*/}
             <Route path={'/'} element={<Login />}></Route>
             <Route path={'/register'} element={<Register />}></Route>
 
+            {/*Below are the protected routes only accessible after logging in*/}
             <Route element={<ProtectedRoutes />}>
                 <Route path={'/home'} element={<HomePage />}></Route>
                 <Route path={'/watchList'} element={<WatchList />}></Route>
                 <Route path={'/watchHistory'} element={<WatchHistory />}></Route>
+                <Route path={'/netflix'} element={<Netflix />}></Route>
+                <Route path={'/disneyPlus'} element={<DisneyPlus />}></Route>
+                <Route path={'/max'} element={<Max />}></Route>
+                <Route path={'/primeVideo'} element={<PrimeVideo />}></Route>
+                <Route path={'/craveTV'} element={<CraveTV />}></Route>
             </Route>
         </Routes>
     );

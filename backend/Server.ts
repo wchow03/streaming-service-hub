@@ -57,10 +57,10 @@ export class Server {
     // ******************************************************
     private initDB(): void {
         this.db = mysql.createConnection({
-            host: "127.0.0.1",
+            host: "localhost",
             user: "root",
             password: "%mysqlroot%",
-            database: "StreamingService"
+            database: "streamingservice"
         });
 
         this.db.connect((err) => {
