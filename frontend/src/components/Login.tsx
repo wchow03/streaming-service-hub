@@ -3,6 +3,7 @@ import {useEffect, useState} from "react";
 import {Link, useNavigate} from "react-router-dom";
 
 export interface User {
+    userID: number,
     username: string,
     password: string,
     email: string
@@ -19,7 +20,10 @@ export default function Login() {
     useEffect(() => {
         fetch("http://localhost:8080/api/users")
             .then(res => res.json())
-            .then((data) => setUsers(data))
+            .then((data) => {
+                setUsers(data)
+                console.log(users);
+            })
             .catch(() => alert("Error getting users"));
     }, []);
 
@@ -30,6 +34,7 @@ export default function Login() {
             const foundUser = users.find(user => user.email === email);
             console.log(foundUser);
             if (foundUser && foundUser.password === password) {
+                window.localStorage.setItem("UserID", JSON.stringify(foundUser.userID))
                 window.localStorage.setItem("User", JSON.stringify(foundUser.username));
                 window.localStorage.setItem("Email", JSON.stringify(foundUser.email));
                 navigate("/home");

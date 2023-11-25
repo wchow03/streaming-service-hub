@@ -53,11 +53,11 @@ function App() {
                 <Route path={'/home'} element={<HomePage />}></Route>
                 <Route path={'/watchList'} element={<WatchList />}></Route>
                 <Route path={'/watchHistory'} element={<WatchHistory />}></Route>
-                <Route path={'/netflix'} element={<Netflix />}></Route>
-                <Route path={'/disneyPlus'} element={<DisneyPlus />}></Route>
-                <Route path={'/max'} element={<Max />}></Route>
-                <Route path={'/primeVideo'} element={<PrimeVideo />}></Route>
-                <Route path={'/craveTV'} element={<CraveTV />}></Route>
+                <Route path={'/Netflix'} element={<Netflix />}></Route>
+                <Route path={'/Disney Plus'} element={<DisneyPlus />}></Route>
+                <Route path={'/Max'} element={<Max />}></Route>
+                <Route path={'/Prime Video'} element={<PrimeVideo />}></Route>
+                <Route path={'/Crave TV'} element={<CraveTV />}></Route>
             </Route>
         </Routes>
     );

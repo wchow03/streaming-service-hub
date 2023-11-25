@@ -42,6 +42,8 @@ export class Server {
 
         this.registerRoute();
         this.loginRoute();
+        this.subscribedRoute();
+        this.nonSubscribedRoute();
 
         // this.app.get("*", (req: Request, res: Response): void => {
         //     res.sendFile(path.resolve("./") + "/build/frontend/index.html");
@@ -143,7 +145,7 @@ export class Server {
 
     private loginRoute(): void {
         this.app.get("/api/users", (req: Request, res: Response): void => {
-           this.db.query("SELECT username, email, password FROM StreamingUser", (err, result) => {
+           this.db.query("SELECT userID, username, email, password FROM StreamingUser", (err, result) => {
               if (err) {
                   console.log(err);
               } else {
@@ -151,6 +153,35 @@ export class Server {
               }
            });
         });
+    }
+
+    private subscribedRoute(): void {
+        this.app.get("/api/home/subscribedServices/:userID", (req: Request, res: Response): void => {
+            // const userID = req.params.userID;
+           this.db.query(`SELECT * FROM SubscribesTo WHERE userID = ${req.params.userID}`, (err, result) => {
+               if (err) {
+                   console.log(err);
+               } else {
+                   res.json(result);
+               }
+           })
+        });
+    }
+
+    private nonSubscribedRoute(): void {
+        this.app.get("/api/home/nonSubscribedServices/:userID", (req: Request, res: Response): void => {
+            this.db.query(`SELECT serviceName, tier, (SELECT monthlyCost FROM Cost c WHERE c.duration = s.duration AND c.totalCost = s.totalCost) AS monthlyCost
+                FROM Subscription s
+                WHERE NOT EXISTS (SELECT * FROM SubscribesTo s1
+                                           WHERE s1.userID = ${req.params.userID} AND s.serviceName = s1.serviceName
+                                           AND s.tier = s1.tier)`, (err, result) => {
+                if (err) {
+                    console.log(err);
+                } else {
+                    res.json(result);
+                }
+            })
+        })
     }
 
 }
