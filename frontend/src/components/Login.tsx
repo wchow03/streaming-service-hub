@@ -22,7 +22,7 @@ export default function Login() {
             .then(res => res.json())
             .then((data) => {
                 setUsers(data)
-                console.log(users);
+                console.log(data);
             })
             .catch(() => alert("Error getting users"));
     }, []);

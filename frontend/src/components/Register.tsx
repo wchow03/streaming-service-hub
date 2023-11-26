@@ -1,5 +1,5 @@
 import {Link, useNavigate} from "react-router-dom";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 
 export default function Register() {
     const [username, setUsername] = useState("");
@@ -7,24 +7,40 @@ export default function Register() {
     const [password, setPassword] = useState("");
     const [birthday, setBirthday] = useState("");
     const navigate = useNavigate();
+    const [emails, setEmails] = useState<string[]>([]);
 
-    const handleSubmit = async (e: any) => {
+    useEffect(() => {
+        fetch("http://localhost:8080/api/users")
+            .then(res => res.json())
+            .then((data) => {
+                setEmails(data.map((user: any) => user.email));
+            })
+            .catch(() => alert("Error getting users"));
+    }, []);
+
+    const handleSubmit = (e: any) => {
         e.preventDefault();
-        const data = {
-            username: username,
-            password: password,
-            email: email,
-            birthday: birthday
+        console.log(emails);
+        console.log(email);
+        if (!emails.includes(email)) {
+            const data = {
+                username: username,
+                password: password,
+                email: email,
+                birthday: birthday
+            }
+            fetch("http://localhost:8080/api/register", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            })
+                .then(() => navigate("/"))
+                .catch(() => alert("Error registering account"));
+        } else {
+            alert("Email already registered");
         }
-        fetch("http://localhost:8080/api/register", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(data)
-        })
-            .then(() => navigate("/"))
-            .catch(() => alert("Error registering account"));
     }
 
     return (
