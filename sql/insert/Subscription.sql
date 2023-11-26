@@ -13,4 +13,6 @@ VALUES  ('Disney Plus', 'Standard', 3, 33.00),
         ('Max', 'Standard', 2, 40.00),
         ('Max', 'Premium', 2, 60.00),
         ('Crave TV', 'Standard', 12, 120.00),
-        ('Crave TV', 'Premium', 12, 180.00);
+        ('Crave TV', 'Premium', 12, 180.00),
+        ('Prime Video', 'Standard', 1, 9.99),
+        ('Prime Video', 'Premium', 1, 15.99);

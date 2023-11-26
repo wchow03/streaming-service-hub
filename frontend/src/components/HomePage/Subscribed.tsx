@@ -67,7 +67,7 @@ export default function Subscribed() {
                             <a href={`/${service.serviceName}`} className="btn btn-primary w-100">View</a>
                         </div>
                         <div className={"col-6"}>
-                            <button className={"btn btn-primary w-100"} style={{background: "red", border: "red"}} onClick={showModal}>Unsubscribe</button>
+                            <button className={"btn btn-primary"} style={{background: "red", border: "red"}} onClick={showModal}>Unsubscribe</button>
                             <Modal
                                 open={open}
                                 title="Unsubscribe"

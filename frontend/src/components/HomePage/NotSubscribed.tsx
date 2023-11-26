@@ -41,7 +41,7 @@ export default function NotSubscribed() {
                             <div className={"col-6"}>
                                 <h5>{nonSubscribed[i+1].tier}</h5>
                                 <h5>${nonSubscribed[i+1].monthlyCost}/month</h5>
-                                <button onClick={() => handleSubmit(userID, nonSubscribed[i].serviceName, nonSubscribed[i].tier)} className={"btn btn-primary mt-2"}>Subscribe</button>
+                                <button onClick={() => handleSubmit(userID, nonSubscribed[i+1].serviceName, nonSubscribed[i+1].tier)} className={"btn btn-primary mt-2"}>Subscribe</button>
                             </div>
                         </div>
                     </div>
