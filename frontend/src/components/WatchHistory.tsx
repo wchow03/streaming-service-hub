@@ -1,6 +1,5 @@
 // import {useEffect, useState} from "react";
 // import {HomeUser} from "./HomePage.tsx";
-import MainNavbar from "./MainNavbar.tsx";
 
 export default function WatchHistory() {
     // const [homeUser, setHomeUser] = useState<HomeUser>();
@@ -13,7 +12,6 @@ export default function WatchHistory() {
 
     return (
         <>
-            <MainNavbar />
             <h1 className={"h1 text-white text-center"}>Watch History Page</h1>
         </>
     );

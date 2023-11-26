@@ -61,9 +61,9 @@ export class Server {
     // ******************************************************
     private initDB(): void {
         this.db = mysql.createConnection({
-            host: "localhost",
-            user: "root",
-            password: "%mysqlroot%",
+            host: "10.254.0.1",
+            user: "guest",
+            password: "DT8Rbt38###mjR*@",
             database: "streamingservice"
         });
 
@@ -147,39 +147,46 @@ export class Server {
 
     private loginRoute(): void {
         this.app.get("/api/users", (req: Request, res: Response): void => {
-           this.db.query("SELECT userID, username, email, password FROM StreamingUser", (err, result) => {
-              if (err) {
-                  console.log(err);
-              } else {
-                  res.json(result);
-              }
-           });
+            this.db.query("SELECT userID, username, email, password FROM StreamingUser", (err, result) => {
+                if (err) {
+                    console.log(err);
+                } else {
+                    res.json(result);
+                }
+            });
         });
     }
 
     private subscribedRoute(): void {
         this.app.get("/api/home/subscribedServices/:userID", (req: Request, res: Response): void => {
             // const userID = req.params.userID;
-           this.db.query(`SELECT serviceName, tier 
-                        FROM SubscribesTo 
-                        WHERE userID = ${req.params.userID}
-                        ORDER BY serviceName`, (err, result) => {
-               if (err) {
-                   console.log(err);
-               } else {
-                   res.json(result);
-               }
-           })
+            this.db.query(`SELECT serviceName, tier
+                           FROM SubscribesTo
+                           WHERE userID = ${req.params.userID}
+                           ORDER BY serviceName`, (err, result) => {
+                if (err) {
+                    console.log(err);
+                } else {
+                    res.json(result);
+                }
+            })
         });
     }
 
     private nonSubscribedRoute(): void {
         this.app.get("/api/home/nonSubscribedServices/:userID", (req: Request, res: Response): void => {
-            this.db.query(`SELECT serviceName, tier, (SELECT monthlyCost FROM Cost c WHERE c.duration = s.duration AND c.totalCost = s.totalCost) AS monthlyCost
-                FROM Subscription s
-                WHERE NOT EXISTS (SELECT * FROM SubscribesTo s1
-                                           WHERE s1.userID = ${req.params.userID} AND s.serviceName = s1.serviceName)
-                ORDER BY s.serviceName, monthlyCost`, (err, result) => {
+            this.db.query(`SELECT serviceName,
+                                  tier,
+                                  (SELECT monthlyCost
+                                   FROM Cost c
+                                   WHERE c.duration = s.duration
+                                     AND c.totalCost = s.totalCost) AS monthlyCost
+                           FROM Subscription s
+                           WHERE NOT EXISTS (SELECT *
+                                             FROM SubscribesTo s1
+                                             WHERE s1.userID = ${req.params.userID}
+                                               AND s.serviceName = s1.serviceName)
+                           ORDER BY s.serviceName, monthlyCost`, (err, result) => {
                 if (err) {
                     console.log(err);
                 } else {
@@ -192,28 +199,34 @@ export class Server {
     private subscribeRoute(): void {
 
         this.app.post("/api/home/subscribe", (req: Request, res: Response): void => {
+            let userID = req.body.userID;
+            let serviceName = req.body.serviceName;
+            let tier = req.body.tier;
+
+
             this.db.query(`INSERT INTO SubscribesTo(userID, serviceName, tier)
-                        VALUES (${req.body.userID}, '${req.body.serviceName}', '${req.body.tier}')`, (err, result) => {
-               if (err) {
-                   console.log(err);
-               } else {
-                   res.json(result);
-               }
+                           VALUES (${userID}, '${serviceName}', '${tier}')`, (err, result) => {
+                if (err) {
+                    console.log(err);
+                } else {
+                    res.json(result);
+                }
             });
         });
     }
 
     private unsubscribeRoute(): void {
         this.app.delete("/api/home/unsubscribe", (req: Request, res: Response): void => {
-            this.db.query(`DELETE FROM SubscribesTo
-                        WHERE userID = ${req.body.userID}
-                        AND serviceName = '${req.body.serviceName}'
-                        AND tier = '${req.body.tier}'`, (err, result) => {
-               if (err) {
-                   console.log(err);
-               } else {
-                   res.json(result);
-               }
+            this.db.query(`DELETE
+                           FROM SubscribesTo
+                           WHERE userID = ${req.body.userID}
+                             AND serviceName = '${req.body.serviceName}'
+                             AND tier = '${req.body.tier}'`, (err, result) => {
+                if (err) {
+                    console.log(err);
+                } else {
+                    res.json(result);
+                }
             });
         });
     }

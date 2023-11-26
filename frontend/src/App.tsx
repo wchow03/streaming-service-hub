@@ -6,10 +6,9 @@ import 'tailwindcss/tailwind.css';
 //
 // import {useState} from 'react';
 // import AddForm from "./components/AddForm.tsx";
-
 import Login from "./components/Login.tsx";
 import "bootstrap/dist/css/bootstrap.min.css";
-import {Routes, Route} from "react-router-dom";
+import {Route, Routes} from "react-router-dom";
 import Register from "./components/Register.tsx";
 import HomePage from "./components/HomePage.tsx";
 import ProtectedRoutes from "./functions/ProtectedRoutes.tsx";
@@ -45,19 +44,20 @@ function App() {
     return (
         <Routes>
             {/*Below are the public routes*/}
-            <Route path={'/'} element={<Login />}></Route>
-            <Route path={'/register'} element={<Register />}></Route>
+            <Route path={'/'} element={<Login/>}></Route>
+            <Route path={'/register'} element={<Register/>}></Route>
 
             {/*Below are the protected routes only accessible after logging in*/}
-            <Route element={<ProtectedRoutes />}>
-                <Route path={'/home'} element={<HomePage />}></Route>
-                <Route path={'/watchList'} element={<WatchList />}></Route>
-                <Route path={'/watchHistory'} element={<WatchHistory />}></Route>
-                <Route path={'/Netflix'} element={<Netflix />}></Route>
-                <Route path={'/Disney Plus'} element={<DisneyPlus />}></Route>
-                <Route path={'/Max'} element={<Max />}></Route>
-                <Route path={'/Prime Video'} element={<PrimeVideo />}></Route>
-                <Route path={'/Crave TV'} element={<CraveTV />}></Route>
+            <Route element={<ProtectedRoutes/>}>
+
+                <Route path={'/home'} element={<HomePage/>}></Route>
+                <Route path={'/watchList'} element={<WatchList/>}></Route>
+                <Route path={'/watchHistory'} element={<WatchHistory/>}></Route>
+                <Route path={'/Netflix'} element={<Netflix/>}></Route>
+                <Route path={'/Disney Plus'} element={<DisneyPlus/>}></Route>
+                <Route path={'/Max'} element={<Max/>}></Route>
+                <Route path={'/Prime Video'} element={<PrimeVideo/>}></Route>
+                <Route path={'/Crave TV'} element={<CraveTV/>}></Route>
             </Route>
         </Routes>
     );
