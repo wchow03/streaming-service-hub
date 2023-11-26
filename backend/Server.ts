@@ -44,6 +44,8 @@ export class Server {
         this.loginRoute();
         this.subscribedRoute();
         this.nonSubscribedRoute();
+        this.subscribeRoute();
+        this.unsubscribeRoute();
 
         // this.app.get("*", (req: Request, res: Response): void => {
         //     res.sendFile(path.resolve("./") + "/build/frontend/index.html");
@@ -158,7 +160,10 @@ export class Server {
     private subscribedRoute(): void {
         this.app.get("/api/home/subscribedServices/:userID", (req: Request, res: Response): void => {
             // const userID = req.params.userID;
-           this.db.query(`SELECT * FROM SubscribesTo WHERE userID = ${req.params.userID}`, (err, result) => {
+           this.db.query(`SELECT serviceName, tier 
+                        FROM SubscribesTo 
+                        WHERE userID = ${req.params.userID}
+                        ORDER BY serviceName`, (err, result) => {
                if (err) {
                    console.log(err);
                } else {
@@ -173,15 +178,44 @@ export class Server {
             this.db.query(`SELECT serviceName, tier, (SELECT monthlyCost FROM Cost c WHERE c.duration = s.duration AND c.totalCost = s.totalCost) AS monthlyCost
                 FROM Subscription s
                 WHERE NOT EXISTS (SELECT * FROM SubscribesTo s1
-                                           WHERE s1.userID = ${req.params.userID} AND s.serviceName = s1.serviceName
-                                           AND s.tier = s1.tier)`, (err, result) => {
+                                           WHERE s1.userID = ${req.params.userID} AND s.serviceName = s1.serviceName)
+                ORDER BY s.serviceName, monthlyCost`, (err, result) => {
                 if (err) {
                     console.log(err);
                 } else {
                     res.json(result);
                 }
-            })
-        })
+            });
+        });
+    }
+
+    private subscribeRoute(): void {
+
+        this.app.post("/api/home/subscribe", (req: Request, res: Response): void => {
+            this.db.query(`INSERT INTO SubscribesTo(userID, serviceName, tier)
+                        VALUES (${req.body.userID}, '${req.body.serviceName}', '${req.body.tier}')`, (err, result) => {
+               if (err) {
+                   console.log(err);
+               } else {
+                   res.json(result);
+               }
+            });
+        });
+    }
+
+    private unsubscribeRoute(): void {
+        this.app.delete("/api/home/unsubscribe", (req: Request, res: Response): void => {
+            this.db.query(`DELETE FROM SubscribesTo
+                        WHERE userID = ${req.body.userID}
+                        AND serviceName = '${req.body.serviceName}'
+                        AND tier = '${req.body.tier}'`, (err, result) => {
+               if (err) {
+                   console.log(err);
+               } else {
+                   res.json(result);
+               }
+            });
+        });
     }
 
 }

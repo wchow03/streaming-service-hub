@@ -1,6 +1,7 @@
 // import {useEffect, useState} from "react";
 import MainNavbar from "./MainNavbar.tsx";
-import StreamingServices from "./StreamingServices.tsx";
+import Subscribed from "./HomePage/Subscribed.tsx";
+import NotSubscribed from "./HomePage/NotSubscribed.tsx";
 
 export interface HomeUser {
     username: string,
@@ -9,13 +10,11 @@ export interface HomeUser {
 
 export default function HomePage() {
 
-
-
     return (
       <>
           <MainNavbar />
-          {/*<h1 className={"h1 text-white text-center"}>Home Page</h1>*/}
-          <StreamingServices />
+          <Subscribed />
+          <NotSubscribed />
       </>
     );
 }
