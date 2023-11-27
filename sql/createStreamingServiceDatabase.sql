@@ -80,7 +80,8 @@ CREATE TABLE SubscribesTo
     tier        VARCHAR(255) NULL,
     PRIMARY KEY (userID, serviceName),
     CONSTRAINT subscribesto_ibfk_1
-        FOREIGN KEY (userID) REFERENCES StreamingUser (userID),
+        FOREIGN KEY (userID) REFERENCES StreamingUser (userID)
+        ON DELETE CASCADE,
     CONSTRAINT subscribesto_ibfk_2
         FOREIGN KEY (serviceName, tier) REFERENCES Subscription (serviceName, tier)
 );
