@@ -51,7 +51,12 @@ function App() {
     }
 
     function fetchStreamingServices() {
-        fetch("http://localhost:8080/api/streamingService")
+        fetch("http://localhost:8080/api/streamingService", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
             .then(response => response.json())
             .then(data => {
                 data.forEach((streamingService: any) => {
