@@ -208,6 +208,13 @@ VALUES ('Disney Plus', 'Standard', 3, 33.00),
        ('Prime Video', 'Standard', 1, 9.99),
        ('Prime Video', 'Premium', 1, 15.99);
 
+INSERT INTO Cost (Duration, TotalCost, MonthlyCost) (
+    SELECT duration, totalCost,
+           totalCost / duration AS monthlyCost
+    FROM Subscription
+    WHERE duration > 0
+);
+
 INSERT INTO Studio (StudioName, Headquarter, CreationDate)
 VALUES ('Sony Pictures', 'California, USA', '1987-09-21'),
        ('Columbia Pictures', 'California, USA', '1924-01-10'),
