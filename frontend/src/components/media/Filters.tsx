@@ -3,17 +3,26 @@ import {useEffect, useState} from "react";
 type FiltersProps = {
     headers: string[],
     filteredServices: string[],
-    setFilteredServices: (filteredServices: string[]) => void
+    setFilteredServices: (filteredServices: string[]) => void,
+    filteredStudios: string[],
+    setFilteredStudios: (filteredStudios: string[]) => void
 }
 
 export default function Filters(
     {
         headers,
         filteredServices,
-        setFilteredServices
+        setFilteredServices,
+        filteredStudios,
+        setFilteredStudios
     }: FiltersProps) {
 
     const [services, setServices] = useState([] as string[]);
+    const [studios, setStudios] = useState([] as string[]);
+
+    useEffect(() => {
+        setFilteredStudios(studios);
+    }, []);
 
 
     // Fetch all services
@@ -42,6 +51,32 @@ export default function Filters(
             });
     }, []);
 
+    // Fetch all studios
+    // ******************************************************
+    useEffect(() => {
+        const select = "studioName";
+        const body = {SELECT: select};
+
+        fetch(`http://localhost:8080/api/studio`,
+            {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(body),
+
+            })
+            .then(response => response.json())
+            .then(result => {
+                const tempStudios = result.map((studio: any) => studio.studioName);
+                console.log("All Services: " + tempStudios);
+                setStudios(tempStudios);
+            })
+            .catch(error => {
+                console.log("ERRRORRRR: " + error);
+            });
+    }, []);
+
 
     return (
         <div>
@@ -55,8 +90,30 @@ export default function Filters(
                         {
                             services.map((service: any, index: number) => {
                                 return (
-                                    <CheckBox name={service} checked={filteredServices.includes(service)}
-                                              key={index}>{service}</CheckBox>
+                                    <CheckBox
+                                        name={service}
+                                        checked={filteredServices.includes(service)}
+                                        filtered={filteredServices}
+                                        setFiltered={setFilteredServices}
+                                        key={index}>{service}</CheckBox>
+                                )
+                            })
+                        }
+                    </div>
+                </div>
+
+                <div className={`flex flex-col gap-2`}>
+                    <p className={`text-lg`}>Studios</p>
+                    <div className={`flex flex-col border border-gray-900 rounded bg-gray-600`}>
+                        {
+                            studios.map((studio: any, index: number) => {
+                                return (
+                                    <CheckBox
+                                        name={studio}
+                                        checked={filteredStudios.includes(studio)}
+                                        filtered={filteredStudios}
+                                        setFiltered={setFilteredStudios}
+                                        key={index}>{studio}</CheckBox>
                                 )
                             })
                         }
@@ -68,13 +125,13 @@ export default function Filters(
         </div>
     )
 
-    function CheckBox({name, checked}: any) {
+    function CheckBox({name, checked, filtered, setFiltered}: any) {
 
         function onChange() {
-            if (filteredServices.includes(name)) {
-                setFilteredServices(filteredServices.filter((service: any) => service !== name));
+            if (filtered.includes(name)) {
+                setFiltered(filtered.filter((service: any) => service !== name));
             } else {
-                setFilteredServices([...filteredServices, name]);
+                setFiltered([...filtered, name]);
             }
         }
 

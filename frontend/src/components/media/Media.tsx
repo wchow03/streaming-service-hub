@@ -11,22 +11,51 @@ export default function Media() {
     const userID = window.localStorage.getItem("UserID")!;
 
     const [data, setData] = useState([] as string[]);
-    const [serviceFilter, setServiceFilter] = useState("");
-    const [filter, setFilter] = useState("");
     const [search, setSearch] = useState("");
     const [submit, setSubmit] = useState(false);
     const [mediaType, setMediaType] = useState("movie");
     const [seed, setSeed] = useState(0);
 
-    // Filter States
+    // Filters
+    // ******************************************************
+    const [filter, setFilter] = useState("");
+    const [searchFilter, setSearchFilter] = useState("");
+    const [serviceFilter, setServiceFilter] = useState("");
+    const [studioFilter, setStudioFilter] = useState("");
+
+    // Filtered Columns
     // ******************************************************
     const [headers, setHeaders] = useState([] as string[]);
     const [subscribed, setSubscribed] = useState([] as string[]);
+    const [filteredStudios, setFilteredStudios] = useState([] as string[]);
 
     useEffect(() => {
         createServiceFilter(subscribed);
-        getMedia(setData, serviceFilter);
-    }, [subscribed]);
+        createStudioFilter(filteredStudios);
+    }, [subscribed, filteredStudios, searchFilter]);
+
+    useEffect(() => {
+        combineFilters();
+    }, [serviceFilter, studioFilter, searchFilter]);
+
+    useEffect(() => {
+        getMedia(setData, filter);
+    }, [filter]);
+
+    function combineFilters() {
+        let combinedFilter: string = "";
+
+        const filters = [serviceFilter, studioFilter, searchFilter];
+
+        filters.map((filter: string, index: number) => {
+            const logic = index + 1 < filters.length ? " AND " : "";
+            if (filter !== "") {
+                combinedFilter = combinedFilter + filter + " AND ";
+            }
+        });
+
+        setFilter(combinedFilter)
+    }
 
     // Seed for DynamicCreateTable
     // ******************************************************
@@ -68,6 +97,19 @@ export default function Media() {
             tempFilter = tempFilter + newFilter + logic;
         });
         setServiceFilter(tempFilter);
+        console.log(tempFilter);
+    }
+
+    function createStudioFilter(studios: string[]) {
+        // console.log(services)
+        let tempFilter = "";
+        studios.map((studio: any, index: number) => {
+            // console.log(service);
+            const logic = index + 1 < studios.length ? " OR " : "";
+            const newFilter = `studioName = "${studio}"`;
+            tempFilter = tempFilter + newFilter + logic;
+        });
+        setStudioFilter(tempFilter);
         console.log(tempFilter);
     }
 
@@ -146,7 +188,10 @@ export default function Media() {
             <Filters
                 headers={headers}
                 setFilteredServices={setSubscribed}
-                filteredServices={subscribed}/>
+                filteredServices={subscribed}
+                setFilteredStudios={setFilteredStudios}
+                filteredStudios={filteredStudios}
+            />
 
             <DynamicCreateTable key={seed} route={mediaType} data={data}/>
 
