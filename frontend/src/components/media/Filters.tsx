@@ -17,13 +17,14 @@ export default function Filters(
         setFilteredStudios
     }: FiltersProps) {
 
+    typeof headers
+
     const [services, setServices] = useState([] as string[]);
     const [studios, setStudios] = useState([] as string[]);
 
     useEffect(() => {
         setFilteredStudios(studios);
     }, []);
-
 
     // Fetch all services
     // ******************************************************

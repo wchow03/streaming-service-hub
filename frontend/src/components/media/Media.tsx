@@ -113,6 +113,14 @@ export default function Media() {
         console.log(tempFilter);
     }
 
+    function createSearchFilter(search: string) {
+        if (search !== "") {
+            setSearchFilter(`mediaName LIKE "%${search}%"`);
+        } else {
+            setSearchFilter("");
+        }
+    }
+
     // Fetch on filter change
     // ******************************************************
     useEffect(() => {
