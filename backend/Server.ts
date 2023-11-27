@@ -47,6 +47,8 @@ export class Server {
         this.subscribeRoute();
         this.unsubscribeRoute();
         this.getWatchlistRoute();
+        this.getShows();
+        this.getMovies();
 
         // this.app.get("*", (req: Request, res: Response): void => {
         //     res.sendFile(path.resolve("./") + "/build/frontend/index.html");
@@ -62,9 +64,9 @@ export class Server {
     // ******************************************************
     private initDB(): void {
         this.db = mysql.createConnection({
-            host: "localhost",
-            user: "root",
-            password: "%mysqlroot%",
+            host: "10.254.0.1",
+            user: "guest",
+            password: "DT8Rbt38###mjR*@",
             database: "streamingservice"
         });
 
@@ -189,7 +191,7 @@ export class Server {
         this.app.get("/api/home/nonSubscribedServices/:userID", (req: Request, res: Response): void => {
             this.db.query(`SELECT s.serviceName, s.tier, c.monthlyCost
                            FROM Subscription s
-                           CROSS JOIN Cost c ON s.duration = c.duration AND s.totalCost = c.totalCost
+                                    CROSS JOIN Cost c ON s.duration = c.duration AND s.totalCost = c.totalCost
                            WHERE NOT EXISTS (SELECT *
                                              FROM SubscribesTo s1
                                              WHERE s1.userID = ${req.params.userID}
@@ -257,6 +259,54 @@ export class Server {
                     res.json(result);
                 }
             });
+        });
+    }
+
+    private getShows(): void {
+        this.app.post("/api/media/shows/", (req: Request, res: Response): void => {
+            const WHERE: string = req.body.WHERE as string;
+
+            let query: string = `SELECT *
+                                 FROM Media m
+                                          JOIN TVShow s
+                                               ON m.mediaID = s.mediaID`;
+
+            if (WHERE) {
+                query += " WHERE " + WHERE;
+            }
+
+            this.db.query(query,
+                (err, result) => {
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        res.json(result);
+                    }
+                });
+        });
+    }
+
+    private getMovies(): void {
+        this.app.post("/api/media/movies/", (req: Request, res: Response): void => {
+            const WHERE: string = req.body.WHERE as string;
+
+            let query: string = `SELECT *
+                                 FROM Media m
+                                          JOIN Movie f
+                                               ON m.mediaID = f.mediaID`;
+
+            if (WHERE) {
+                query += " WHERE " + WHERE;
+            }
+
+            this.db.query(query,
+                (err, result) => {
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        res.json(result);
+                    }
+                });
         });
     }
 

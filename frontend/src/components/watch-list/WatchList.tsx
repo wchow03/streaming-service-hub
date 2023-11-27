@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {HomeUser} from "../HomePage";
+import {HomeUser} from "../home-page/HomePage";
 import DynamicCreateTable from "../dynamic/DynamicCreateTable";
 import {useNavigate} from "react-router-dom";
 

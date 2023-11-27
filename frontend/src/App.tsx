@@ -10,13 +10,14 @@ import Login from "./components/Login.tsx";
 import "bootstrap/dist/css/bootstrap.min.css";
 import {Route, Routes} from "react-router-dom";
 import Register from "./components/Register.tsx";
-import HomePage from "./components/HomePage.tsx";
+import HomePage from "./components/home-page/HomePage.tsx";
 import ProtectedRoutes from "./functions/ProtectedRoutes.tsx";
 import WatchList from "./components/watch-list/WatchList.tsx";
 import WatchHistory from "./components/WatchHistory.tsx";
 import {useEffect, useState} from "react";
 import DynamicStreamingService from "./components/dynamic/DynamicStreamingService.tsx";
 import ViewWatchList from "./components/watch-list/ViewWatchList.tsx";
+import Media from "./components/media/Media.tsx";
 
 
 function App() {
@@ -71,6 +72,7 @@ function App() {
                 <Route path={'/home'} element={<HomePage/>}></Route>
                 <Route path={'/watchlist'} element={<WatchList/>}></Route>
                 <Route path={'/watchhistory'} element={<WatchHistory/>}></Route>
+                <Route path={'/media'} element={<Media/>}></Route>
 
                 <Route path={`/service/:serviceName`} element={<DynamicStreamingService/>}></Route>
 

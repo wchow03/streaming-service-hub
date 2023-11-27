@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {HomeUser} from "./HomePage.tsx";
+import {HomeUser} from "./home-page/HomePage.tsx";
 import {Link} from "react-router-dom";
 
 export default function MainNavbar() {
@@ -21,6 +21,7 @@ export default function MainNavbar() {
 
                     <div className={`place-self-start flex-grow flex flex-row flex-wrap gap-5`}>
                         <Link className={"text-white hover:opacity-70"} to={"/home"}>Home</Link>
+                        <Link className={"text-white hover:opacity-70"} to={"/media"}>Media</Link>
                         <Link className={"text-white hover:opacity-70"} to={"/watchList"}>Watch&nbsp;Lists</Link>
                         <Link className={"text-white hover:opacity-70"} to={"/watchHistory"}>Watch&nbsp;History</Link>
                     </div>

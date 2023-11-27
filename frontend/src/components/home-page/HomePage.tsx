@@ -1,6 +1,6 @@
 // import {useEffect, useState} from "react";
-import Subscribed from "./home-page/Subscribed.tsx";
-import NotSubscribed from "./home-page/NotSubscribed.tsx";
+import Subscribed from "./Subscribed.tsx";
+import NotSubscribed from "./NotSubscribed.tsx";
 import {useState} from "react";
 
 export interface HomeUser {
