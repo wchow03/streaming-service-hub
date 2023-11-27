@@ -10,7 +10,9 @@ export default function ProtectedRoutes() {
         ?
         <>
             <MainNavbar/>
-            <Outlet/>
+            <div className={`pt-10`}>
+                <Outlet/>
+            </div>
         </>
         :
         <Navigate to={"/"} state={{from: location}} replace/>;

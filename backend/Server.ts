@@ -46,6 +46,7 @@ export class Server {
         this.nonSubscribedRoute();
         this.subscribeRoute();
         this.unsubscribeRoute();
+        this.getWatchlistRoute();
 
         // this.app.get("*", (req: Request, res: Response): void => {
         //     res.sendFile(path.resolve("./") + "/build/frontend/index.html");
@@ -87,8 +88,19 @@ export class Server {
     // /api/:table
     // ******************************************************
     private dynamicRoute(route: string, query: string): void {
-        this.app.get(route, (req: Request, res: Response): void => {
-            this.db.query(query, (err, result) => {
+        this.app.post(route, (req: Request, res: Response): void => {
+
+            const WHERE: string = req.body.WHERE as string;
+            let thisQuery: string = query;
+            // console.log("WHERE: " + WHERE);
+
+            if (WHERE) {
+                thisQuery += " WHERE " + WHERE;
+            }
+
+            console.log("QUERY: " + thisQuery);
+
+            this.db.query(thisQuery, (err, result) => {
                 if (err) {
                     console.error("ERROR: " + err);
                 } else {
@@ -222,6 +234,27 @@ export class Server {
                            WHERE userID = ${req.body.userID}
                              AND serviceName = '${req.body.serviceName}'
                              AND tier = '${req.body.tier}'`, (err, result) => {
+                if (err) {
+                    console.log(err);
+                } else {
+                    res.json(result);
+                }
+            });
+        });
+    }
+
+    private getWatchlistRoute(): void {
+        this.app.get("/api/watchlist/:listID/", (req: Request, res: Response): void => {
+            this.db.query(`SELECT l.listID,
+                                  m.mediaName,
+                                  m.rating,
+                                  m.studioName,
+                                  m.serviceName
+                           FROM AddToList l
+                                    JOIN Media m
+                                         ON l.mediaID = m.mediaID
+                           WHERE l.listID = ${req.params.listID}
+            `, (err, result) => {
                 if (err) {
                     console.log(err);
                 } else {
