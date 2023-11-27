@@ -62,9 +62,9 @@ export class Server {
     // ******************************************************
     private initDB(): void {
         this.db = mysql.createConnection({
-            host: "10.254.0.1",
-            user: "guest",
-            password: "DT8Rbt38###mjR*@",
+            host: "localhost",
+            user: "root",
+            password: "%mysqlroot%",
             database: "streamingservice"
         });
 
@@ -187,13 +187,9 @@ export class Server {
 
     private nonSubscribedRoute(): void {
         this.app.get("/api/home/nonSubscribedServices/:userID", (req: Request, res: Response): void => {
-            this.db.query(`SELECT serviceName,
-                                  tier,
-                                  (SELECT monthlyCost
-                                   FROM Cost c
-                                   WHERE c.duration = s.duration
-                                     AND c.totalCost = s.totalCost) AS monthlyCost
+            this.db.query(`SELECT s.serviceName, s.tier, c.monthlyCost
                            FROM Subscription s
+                           CROSS JOIN Cost c ON s.duration = c.duration AND s.totalCost = c.totalCost
                            WHERE NOT EXISTS (SELECT *
                                              FROM SubscribesTo s1
                                              WHERE s1.userID = ${req.params.userID}
