@@ -2,16 +2,31 @@ import {useEffect, useState} from "react";
 import DynamicCreateTable from "../dynamic/DynamicCreateTable.tsx";
 import {getMovies} from "./Movies.tsx";
 import {getShows} from "./Shows.tsx";
+import SearchBar from "./SearchBar.tsx";
+import Filters from "./Filters.tsx";
+
 
 export default function Media() {
 
+    const userID = window.localStorage.getItem("UserID")!;
+
     const [data, setData] = useState([] as string[]);
+    const [serviceFilter, setServiceFilter] = useState("");
     const [filter, setFilter] = useState("");
     const [search, setSearch] = useState("");
     const [submit, setSubmit] = useState(false);
     const [mediaType, setMediaType] = useState("movie");
-    const [searchFocus, setSearchFocus] = useState(false);
     const [seed, setSeed] = useState(0);
+
+    // Filter States
+    // ******************************************************
+    const [headers, setHeaders] = useState([] as string[]);
+    const [subscribed, setSubscribed] = useState([] as string[]);
+
+    useEffect(() => {
+        createServiceFilter(subscribed);
+        getMedia(setData, serviceFilter);
+    }, [subscribed]);
 
     // Seed for DynamicCreateTable
     // ******************************************************
@@ -22,37 +37,68 @@ export default function Media() {
     // Initial fetch
     // ******************************************************
     useEffect(() => {
-        getMedia(setData, filter);
+        getMedia(setData, serviceFilter);
+        getHeaders();
+    }, [serviceFilter]);
+
+    // Create service filter
+    // ******************************************************
+    useEffect(() => {
+        fetch(`http://localhost:8080/api/home/subscribedServices/${userID}`)
+            .then(response => response.json())
+            .then(result => {
+                const subscribedServices = result.map((service: any) => service.serviceName);
+                console.log("Services: " + subscribedServices);
+                setSubscribed(subscribedServices);
+                return subscribedServices;
+            })
+            .then((result) => {
+                createServiceFilter(result);
+            });
+
     }, []);
+
+    function createServiceFilter(services: string[]) {
+        // console.log(services)
+        let tempFilter = "";
+        services.map((service: any, index: number) => {
+            // console.log(service);
+            const logic = index + 1 < services.length ? " OR " : "";
+            const newFilter = `serviceName = "${service}"`;
+            tempFilter = tempFilter + newFilter + logic;
+        });
+        setServiceFilter(tempFilter);
+        console.log(tempFilter);
+    }
 
     // Fetch on filter change
     // ******************************************************
     useEffect(() => {
         if (search !== "") {
-            setFilter(`mediaName LIKE "%${search}%"`);
+            setFilter(`mediaName LIKE "%${search}%" AND (` + serviceFilter + `)`);
         } else {
-            setFilter("");
+            setFilter(serviceFilter);
         }
 
         if (submit) {
             getMedia(setData, filter);
             setSubmit(false);
         }
+        console.log(filter);
     }, [submit]);
 
     // Search Functionality
     // ******************************************************
     function handleSearchChange(e: any) {
         setSearch(e.target.value);
-        // getMedia(setData, filter);
     }
 
     function handleSubmit(e: any) {
         e.preventDefault();
         if (search !== "") {
-            setFilter(`mediaName LIKE "%${search}%"`);
+            setFilter(`mediaName LIKE "%${search}%" AND (` + serviceFilter + `)`);
         } else {
-            setFilter("");
+            setFilter(serviceFilter);
         }
 
         if (submit) {
@@ -65,7 +111,7 @@ export default function Media() {
     // Media Helpers
     // ******************************************************
     useEffect(() => {
-        getMedia(setData, filter);
+        getMedia(setData, serviceFilter);
     }, [mediaType]);
 
     function handleMediaTypeChange(e: any) {
@@ -82,45 +128,27 @@ export default function Media() {
         console.log(result);
     }
 
+    function getHeaders(): string[] {
+        let headers: string[] = data.map((item: any) => Object.keys(item)).flat();
+        let noIDHeaders = headers.filter((item: string) => !item.toLowerCase().includes("id"));
+        let uniqueHeaders: string[] = [...new Set(noIDHeaders)];
+        setHeaders(uniqueHeaders);
+        return uniqueHeaders;
+    }
+
     return (
-        <div className={`pb-10`}>
+        <div className={`pb-10 sm:px-6 md:px-24 lg:px-48 flex flex-col gap-3`}>
             <h1 className={`h1 text-white text-center`}>Media</h1>
 
-            <form onSubmit={handleSubmit}
-                  className={`flex flex-row items-stretch text-white px-5 justify-center w-full gap-1`}>
 
-                <select
-                    className={`rounded-l px-3 text-black outline ${searchFocus ? "outline-blue-500" : "outline-white"}`}
-                    onChange={handleMediaTypeChange}
-                    name="mediaType">
-                    <option value="movie">Movies</option>
-                    <option value="show">Shows</option>
-                </select>
+            <SearchBar values={[search]} handlers={[handleMediaTypeChange, handleSearchChange, handleSubmit]}/>
 
-                <input
-                    value={search}
-                    className={`pl-3 text-black flex-grow outline focus:outline-blue-500 outline-white`}
-                    type={`text`}
-                    placeholder={`Search`}
-                    onFocus={() => setSearchFocus(true)}
-                    onBlur={() => setSearchFocus(false)}
-                    onChange={handleSearchChange}
-                />
+            <Filters
+                headers={headers}
+                setFilteredServices={setSubscribed}
+                filteredServices={subscribed}/>
 
-                <button
-                    className={`px-2 py-2 rounded-r outline ${searchFocus ? "outline-blue-500" : "outline-white"}`}
-                    type={`submit`}>
-                    <svg className="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-                         viewBox="0 0 20 20">
-                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
-                              d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
-                    </svg>
-                </button>
-
-            </form>
-
-
-            <DynamicCreateTable key={seed} route={mediaType} data={data} className={`sm:px-6 md:px-24 lg:px-48`}/>
+            <DynamicCreateTable key={seed} route={mediaType} data={data}/>
 
         </div>
     )

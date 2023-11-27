@@ -92,12 +92,18 @@ export class Server {
     private dynamicRoute(route: string, query: string): void {
         this.app.post(route, (req: Request, res: Response): void => {
 
+            const SELECT: string = req.body.SELECT as string;
             const WHERE: string = req.body.WHERE as string;
+
             let thisQuery: string = query;
-            // console.log("WHERE: " + WHERE);
+            console.log("SELECT: " + SELECT);
 
             if (WHERE) {
                 thisQuery += " WHERE " + WHERE;
+            }
+
+            if (SELECT) {
+                thisQuery = thisQuery.replace("*", SELECT);
             }
 
             console.log("QUERY: " + thisQuery);

@@ -29,7 +29,7 @@ export default function NotSubscribed({reset}: { reset: any }) {
     for (let i = 0; i < nonSubscribed.length; i += 2) {
         nonSubscribedCards.push(
             <div key={nonSubscribed[i].serviceName}
-                 className={"flex sm:flex-row md:flex-col gap-4 outline outline-1 outline-white p-3 rounded w-full md:w-1/3"}>
+                 className={"flex sm:flex-row md:flex-col gap-4 outline outline-1 outline-white p-3 rounded w-full md:w-1/3 lg:w-1/4"}>
                 <h5 className="text-center h5 text-white">{nonSubscribed[i].serviceName}</h5>
                 <div className={"text-center w-full"}>
                     <div className={"flex flex-col gap-3 text-white w-full"}>
@@ -68,7 +68,7 @@ export default function NotSubscribed({reset}: { reset: any }) {
                 <h1 className={"text-white h1"}>Available Services</h1>
 
             }
-            <div className={"row p-3"}>
+            <div className={"flex flex-row flex-wrap gap-5"}>
                 {
                     nonSubscribedCards.map((card) => card)
                 }

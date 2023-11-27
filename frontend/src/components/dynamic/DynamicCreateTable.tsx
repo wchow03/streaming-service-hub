@@ -15,6 +15,7 @@ export default function DynamicCreateTable({route, data, className, handleClick}
 
     // console.log("Printing table data for " + route);
     typeof route;
+
     return (
         <div className={`pt-10 w-full overflow-x-scroll ` + className}>
             {/*<h2 className={`text-xl font-bold text-white pb-10 uppercase`}> {route.replace(/([a-z])([A-Z])/g, '$1 $2')} </h2>*/}
