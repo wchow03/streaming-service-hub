@@ -50,6 +50,10 @@ export class Server {
         this.getShows();
         this.getMovies();
 
+        this.updateUsername();
+        // this.updatePassword();
+        // this.updateEmail();
+
         // this.app.get("*", (req: Request, res: Response): void => {
         //     res.sendFile(path.resolve("./") + "/build/frontend/index.html");
         // });
@@ -64,9 +68,9 @@ export class Server {
     // ******************************************************
     private initDB(): void {
         this.db = mysql.createConnection({
-            host: "10.254.0.1",
-            user: "guest",
-            password: "DT8Rbt38###mjR*@",
+            host: "localhost",
+            user: "root",
+            password: "%mysqlroot%",
             database: "streamingservice"
         });
 
@@ -313,6 +317,20 @@ export class Server {
                         res.json(result);
                     }
                 });
+        });
+    }
+
+    private updateUsername(): void {
+        this.app.post("/api/account/updateUsername", (req: Request, res: Response): void => {
+            const id = req.body.userID;
+            const newUsername = req.body.userName;
+           this.db.query(`UPDATE Streaminguser SET userName = '${newUsername}' WHERE userID = ${id}`, (err, result) => {
+               if (err) {
+                   console.log(err);
+               } else {
+                   res.json(result);
+               }
+           })
         });
     }
 
