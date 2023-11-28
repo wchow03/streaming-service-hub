@@ -11,7 +11,7 @@ export default function Register() {
     const handleSubmit = async (e: any) => {
         e.preventDefault();
         const body = {
-            username: username,
+            user: username,
             password: password,
             email: email,
             birthday: birthday

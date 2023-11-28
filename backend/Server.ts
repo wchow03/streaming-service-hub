@@ -523,6 +523,11 @@ export class Server {
             const email = req.body.email;
             const birthday = req.body.birthday;
 
+            if (!username || !password || !email || !birthday) {
+                res.status(400).send({error: "Missing required field"});
+                return;
+            }
+
             const salt = crypto.randomBytes(16).toString('hex');
             const hashedPassword = crypto.createHash('sha512').update(password + salt).digest('hex');
 
