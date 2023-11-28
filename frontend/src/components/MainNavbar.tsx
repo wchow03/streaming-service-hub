@@ -24,7 +24,7 @@ export default function MainNavbar() {
     return (
         <>
             <nav
-                className={`flex h-20 bg-slate-900 lg:hidden justify-end items-center px-3 `}>
+                className={`flex h-20 bg-slate-900 md:hidden justify-end items-center px-3 `}>
                 <button
                     className={`${visible && "fixed top-4 z-20"}`}
                     onClick={() => {
@@ -49,14 +49,15 @@ export default function MainNavbar() {
             </nav>
 
             <nav
-                className={`sticky bg-slate-900 py-3 text-lg ${visible ? "max-lg:fixed max-lg:top-0 max-lg:h-screen max-lg:z-10" : "hidden"} lg:block`}>
+                className={`sticky bg-slate-900 py-3 text-md ${visible ? "max-md:fixed max-md:top-0 max-md:h-screen max-md:z-10" : "hidden"} md:block`}>
                 <div
-                    className={"flex flex-col lg:flex-row flex-wrap lg:justify-between items-center h-full w-screen px-5 max-xl:pt-20 lg:content-center gap-5"}>
+                    className={"flex flex-col md:flex-row flex-wrap md:justify-between md:items-center h-full w-screen px-5 max-xl:pt-20 gap-5"}>
                     <Link
-                        className={`${visible ? "top-6 hidden" : "-top-14"} max-lg:absolute max-lg:visible text-white justify-self-start hover:opacity-70 basis-1/12 `}
+                        className={`${visible ? "max-md:top-6  max-md:hidden" : "max-md:-top-14"} max-md:absolute max-md:visible text-white  hover:opacity-70 basis-1/12 `}
                         to={`/home`}>{homeUser && homeUser.username}</Link>
 
-                    <div className={`place-self-start flex-grow flex flex-col  lg:flex-row flex-wrap gap-5`}>
+                    <div
+                        className={`flex-grow flex flex-col md:flex-row flex-wrap gap-5`}>
                         <Link className={"text-white hover:opacity-70"} to={"/home"} onClick={hide}>Home</Link>
                         <Link className={"text-white hover:opacity-70"} to={"/media"} onClick={hide}>Media</Link>
                         <Link className={"text-white hover:opacity-70"} to={"/watchList"}
@@ -69,8 +70,8 @@ export default function MainNavbar() {
                           onClick={hide}>Account&nbsp;Settings</Link>
 
                     <Link
-                        className={"text-white max-lg:flex max-lg:w-full max-lg:text-center uppercase font-bold hover:bg-red-800 basis-1/12  bg-red-500 py-1 lg:px-3 rounded-md transition-colors duration-150"}
-                        to={"/"} onClick={hide}><p className={`max-lg:w-full max-lg:m-auto`}>Log&nbsp;out</p></Link>
+                        className={"text-white max-md:flex max-md:w-full max-md:text-center uppercase font-bold hover:bg-red-800 basis-1/12  bg-red-500 py-1 md:px-3 rounded-md transition-colors duration-150"}
+                        to={"/"} onClick={hide}><p className={`max-md:w-full max-md:m-auto`}>Log&nbsp;out</p></Link>
                 </div>
             </nav>
         </>

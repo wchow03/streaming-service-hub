@@ -354,7 +354,7 @@ export class Server {
                            FROM AddToList l
                                     JOIN Media m
                                          ON l.mediaID = m.mediaID
-                           WHERE l.listID = ${req.params.listID}
+                           WHERE l.listID = '${req.params.listID}'
             `, (err, result) => {
                 if (err) {
                     console.log(err);
@@ -518,7 +518,7 @@ export class Server {
 
             console.log(req.body);
 
-            const username = req.body.username;
+            const username = req.body.user;
             const password = req.body.password;
             const email = req.body.email;
             const birthday = req.body.birthday;
