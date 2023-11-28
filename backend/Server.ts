@@ -159,18 +159,19 @@ export class Server {
 
 
     /**
-     *<code>
-     *     req.body =
-     *     {
-     *      "SET": {
-     *          [column ID]: [new value],
-     *          ...
-     *      },
-     *      "WHERE": {
-     *          [primarykey ID]: [ID]
+     *```
+     *  req.body =
+     *      {
+     *          "SET": {
+     *              [columnID]: [newValue],
+     *              ...
+     *          },
+     *          "WHERE": {
+     *              [primaryKeyID]: [ID],
+     *              ...
+     *          }
      *      }
-     *     }
-     * </code>
+     * ```
      **/
     private dynamicUpdateRoute(route: string, table: string): void {
         this.app.put(route, (req: Request, res: Response): void => {

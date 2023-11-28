@@ -200,24 +200,30 @@ export default function Media() {
     // }
 
     return (
-        <div className={`pb-10 sm:px-6 md:px-24 lg:px-48 flex flex-col gap-3`}>
+        <div className={` flex flex-col gap-3`}>
             <h1 className={`h1 text-white text-center`}>Media</h1>
 
-            <div className={`sticky top-5 flex flex-col gap-2`}>
-                <SearchBar values={[search]} handlers={[handleMediaTypeChange, handleSearchChange, handleSubmit]}/>
+            <div
+                className={`sticky top-7 flex flex-col gap-2 bg-slate-200 py-4`}>
 
-                <Filters
-                    setFilteredServices={setFilteredServices}
-                    filteredServices={filteredServices}
-                    setFilteredStudios={setFilteredStudios}
-                    filteredStudios={filteredStudios}
-                />
+                <div className={`flex flex-col gap-2 sm:px-6 md:px-24 lg:px-48`}>
+                    <SearchBar values={[search]} handlers={[handleMediaTypeChange, handleSearchChange, handleSubmit]}/>
 
-                <AddToWatchList mediaID={mediaID}/>
+                    <Filters
+                        setFilteredServices={setFilteredServices}
+                        filteredServices={filteredServices}
+                        setFilteredStudios={setFilteredStudios}
+                        filteredStudios={filteredStudios}
+                    />
+
+                    <AddToWatchList mediaID={mediaID}/>
+                </div>
+
             </div>
 
 
-            <DynamicCreateTable handleClick={handleListItemClick} key={seed} route={mediaType} data={data}
+            <DynamicCreateTable className={`pb-10 sm:px-6 md:px-24 lg:px-48`} handleClick={handleListItemClick}
+                                key={seed} route={mediaType} data={data}
                                 active={active}/>
 
         </div>

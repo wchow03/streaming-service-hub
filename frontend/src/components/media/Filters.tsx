@@ -82,7 +82,8 @@ export default function Filters(
     return (
         <div className={`w-full bg-white rounded p-1 `}>
             {/* Created sort options for each column*/}
-            <form className={`w-full flex flex-col md:flex-row justify-start justify-items-center text-white gap-2`}>
+            <form
+                className={`divide-x-2 w-full flex flex-col md:flex-row justify-start justify-items-center text-white gap-2`}>
 
                 <FilterGroup label={`Services`}
                              complete={services}
@@ -136,7 +137,7 @@ export default function Filters(
             <div className={`relative flex flex-col gap-1 basis-1/2 md:w-1/2`}>
                 <button
                     type={`button`}
-                    className={`flex flex-row gap-2 items-center font-bolds text-black text-sm w-full py-2 px-3 text-left outline outline-2 rounded transition-colors duration-300 hover:outline-teal-300 ${visible === label && "outline-teal-600"}`}
+                    className={`flex flex-row gap-2 items-center font-bolds text-black text-sm w-full py-2 px-3 text-left rounded transition-colors duration-300 hover:outline-teal-300 ${visible === label && "outline-teal-600"}`}
                     onClick={toggleVisible}>
                     {label}:
                     <div className={`overflow-x-scroll flex flex-row w-full gap-2 no-scrollbar`}>
