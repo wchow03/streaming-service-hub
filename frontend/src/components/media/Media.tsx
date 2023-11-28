@@ -204,7 +204,7 @@ export default function Media() {
             <h1 className={`h1 text-white text-center`}>Media</h1>
 
             <div
-                className={`sticky top-7 flex flex-col gap-2 bg-slate-200 py-4`}>
+                className={`sticky top-7 flex flex-col gap-2 bg-slate-200 bg-opacity-50 py-4`}>
 
                 <div className={`flex flex-col gap-2 sm:px-6 md:px-24 lg:px-48`}>
                     <SearchBar values={[search]} handlers={[handleMediaTypeChange, handleSearchChange, handleSubmit]}/>

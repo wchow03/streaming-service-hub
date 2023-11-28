@@ -58,7 +58,9 @@ export default function UpdateWatchList({update, watchListID, watchListName}: Up
     }
 
     return (
-        <form onSubmit={handleSubmit}>
+        <form
+            className={`${!watchListName && "opacity-50"} transition-opacity duration-300`}
+            onSubmit={handleSubmit}>
             <div
                 className={`flex flex-row items-center w-full rounded-md focus-within:outline focus-within:outline-blue-500`}>
                 <label
@@ -66,13 +68,15 @@ export default function UpdateWatchList({update, watchListID, watchListName}: Up
                     Update Watchlist Name
                 </label>
                 <input
+                    disabled={watchListID === -1 || watchListID === undefined}
                     onChange={handleChange}
-                    value={name}
+                    value={watchListName ? name : ""}
                     placeholder={`Enter a name for your watchlist`}
                     className={`bg-white py-1 flex-grow peer px-1`}
                     type="text"/>
                 <button
-                    className={`bg-blue-500 text-white hover:bg-blue-800 transition-colors duration-300 px-4 py-1 rounded-r-md border-l peer-focus:outline peer-focus:outline-blue-500`}>
+                    disabled={watchListID === -1 || watchListID === undefined}
+                    className={`bg-blue-500 text-white hover:bg-blue-800 transition-colors duration-300 px-4 py-1 rounded-r-md border-l peer-focus:outline peer-focus:outline-blue-500 disabled:hover:bg-blue-500`}>
                     Update
                 </button>
             </div>
