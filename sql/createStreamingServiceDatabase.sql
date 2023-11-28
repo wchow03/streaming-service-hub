@@ -18,12 +18,13 @@ SET FOREIGN_KEY_CHECKS = 1;
 
 CREATE TABLE StreamingUser
 (
-    userID   INT          NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    userName VARCHAR(255) NULL,
-    password VARCHAR(255) NULL,
-    email    VARCHAR(255) NULL,
-    birthday DATE         NOT NULL,
-    INDEX idx_Birthday (Birthday),
+    userID       VARCHAR(255) default (UUID()) PRIMARY KEY,
+    userName     VARCHAR(255) NULL,
+    email        VARCHAR(255) NULL,
+    birthday     DATE         NOT NULL,
+    passwordHash VARCHAR(255),
+    passwordSalt VARCHAR(255) default (UUID()),
+    INDEX idx_Birthday (birthday),
     CONSTRAINT email
         UNIQUE (email)
 );
@@ -75,7 +76,7 @@ CREATE TABLE Cost
 
 CREATE TABLE SubscribesTo
 (
-    userID      INT          NOT NULL,
+    userID      VARCHAR(255) NOT NULL,
     serviceName VARCHAR(255) NOT NULL,
     tier        VARCHAR(255) NULL,
     PRIMARY KEY (userID, serviceName),
@@ -91,7 +92,7 @@ CREATE INDEX serviceName
 
 CREATE TABLE Media
 (
-    mediaID     INT          NOT NULL
+    mediaID     varchar(255) NOT NULL
         PRIMARY KEY,
     mediaName   VARCHAR(255) NULL,
     rating      double       NULL,
@@ -111,13 +112,13 @@ CREATE INDEX studioName
 
 CREATE TABLE WatchHistory
 (
-    userID    INT  NOT NULL,
-    mediaID   INT  NOT NULL,
-    dateAdded date NOT NULL,
+    userID    VARCHAR(255) NOT NULL,
+    mediaID   varchar(255) NOT NULL,
+    dateAdded date         NOT NULL,
     PRIMARY KEY (userID, mediaID, dateAdded),
     CONSTRAINT watchhistory_ibfk_1
         FOREIGN KEY (userID) REFERENCES StreamingUser (userID)
-        ON DELETE CASCADE,
+            ON DELETE CASCADE,
     CONSTRAINT watchhistory_ibfk_2
         FOREIGN KEY (mediaID) REFERENCES Media (mediaID)
 );
@@ -127,10 +128,9 @@ CREATE INDEX mediaID
 
 CREATE TABLE WatchList
 (
-    listID   INT AUTO_INCREMENT
-        PRIMARY KEY,
+    listID   VARCHAR(255) default (UUID()) PRIMARY KEY,
     listName VARCHAR(255) NULL,
-    userID   INT          NOT NULL,
+    userID   VARCHAR(255) NOT NULL,
     CONSTRAINT watchlist_ibfk_1
         FOREIGN KEY (userID) REFERENCES StreamingUser (userID)
             ON DELETE CASCADE
@@ -141,8 +141,8 @@ CREATE INDEX userID
 
 CREATE TABLE AddToList
 (
-    listID  INT NOT NULL,
-    mediaID INT NOT NULL,
+    listID  varchar(255) NOT NULL,
+    mediaID varchar(255) NOT NULL,
     PRIMARY KEY (mediaID, listID),
     CONSTRAINT addtolist_ibfk_1
         FOREIGN KEY (mediaID) REFERENCES Media (mediaID),
@@ -154,7 +154,7 @@ CREATE TABLE AddToList
 CREATE TABLE Genre
 (
     genreName VARCHAR(255) NOT NULL,
-    mediaID   INT          NOT NULL,
+    mediaID   varchar(255) NOT NULL,
     PRIMARY KEY (genreName, mediaID),
     CONSTRAINT genre_ibfk_1
         FOREIGN KEY (mediaID) REFERENCES Media (mediaID)
@@ -165,8 +165,7 @@ CREATE INDEX mediaID
 
 CREATE TABLE TVShow
 (
-    mediaID         INT NOT NULL
-        PRIMARY KEY,
+    mediaID         VARCHAR(255) default (UUID()) PRIMARY KEY,
     numberOfSeasons INT NULL,
     CONSTRAINT tvshow_ibfk_1
         FOREIGN KEY (mediaID) REFERENCES Media (mediaID)
@@ -174,9 +173,9 @@ CREATE TABLE TVShow
 
 CREATE TABLE Season
 (
-    mediaID      INT NOT NULL,
-    seasonNumber INT NOT NULL,
-    episodeCount INT NULL,
+    mediaID      varchar(255) NOT NULL,
+    seasonNumber INT          NOT NULL,
+    episodeCount INT          NULL,
     PRIMARY KEY (mediaID, seasonNumber),
     CONSTRAINT season_ibfk_1
         FOREIGN KEY (mediaID) REFERENCES TVShow (mediaID)
@@ -184,7 +183,7 @@ CREATE TABLE Season
 
 CREATE TABLE Movie
 (
-    mediaID INT          NOT NULL,
+    mediaID varchar(255) NOT NULL,
     version VARCHAR(255) NOT NULL,
     length  INT          NULL,
     PRIMARY KEY (mediaID, version),
@@ -681,5 +680,5 @@ VALUES (6, 1, 7),
        (50, 6, 20);
 
 
-INSERT INTO StreamingUser (userID, userName, password, email, birthday) -- Weak entity for TVShow
-VALUES (0, 'sim', 'sim', 'sim@gmail.com', '2000-01-01')
+# INSERT INTO StreamingUser (userName, password, email, birthday)
+# VALUES ('sim', 'sim', 'sim@gmail.com', '2000-01-01')

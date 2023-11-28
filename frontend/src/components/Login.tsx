@@ -1,7 +1,7 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import {useEffect, useState} from "react";
 import {Link, useNavigate} from "react-router-dom";
-import { LockOutlined } from '@ant-design/icons';
+import {LockOutlined} from '@ant-design/icons';
 import {Input} from "antd";
 
 export interface User {
@@ -16,15 +16,27 @@ export default function Login() {
 
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
-    const [users, setUsers] = useState<User[]>([]);
-    // const [user, setUser] = useAtom(userData);
+
     const navigate = useNavigate();
 
     useEffect(() => {
-        fetch("http://localhost:8080/api/users")
+        const body = {
+            email: email,
+            password: password
+        }
+
+        fetch("http://localhost:8080/api/authenticate/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(body)
+        })
             .then(res => res.json())
             .then((data) => {
-                setUsers(data)
+                window.localStorage.setItem("UserID", JSON.stringify(data.userID))
+                window.localStorage.setItem("User", JSON.stringify(data.username));
+                window.localStorage.setItem("Email", JSON.stringify(data.email));
                 console.log(data);
             })
             .catch(() => alert("Error getting users"));
@@ -32,33 +44,51 @@ export default function Login() {
 
     function handleSubmit(e: any): void {
         e.preventDefault();
-        const emails: string[] = users.map(user => user.email);
-        if (emails.includes(email)) {
-            const foundUser = users.find(user => user.email === email);
-            console.log(foundUser);
-            if (foundUser && foundUser.password === password) {
-                window.localStorage.setItem("UserID", JSON.stringify(foundUser.userID))
-                window.localStorage.setItem("User", JSON.stringify(foundUser.username));
-                window.localStorage.setItem("Email", JSON.stringify(foundUser.email));
 
-                // setUser({username: foundUser.username, email: foundUser.email, id: foundUser.userID});
-
-                navigate("/home");
-            } else {
-                alert("Wrong Password");
-            }
-        } else {
-            alert("Email not found");
+        const body = {
+            email: email,
+            password: password
         }
+
+        // ...
+
+        fetch("http://localhost:8080/api/authenticate/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(body)
+        })
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error(`HTTP error! Status: ${res.status}`);
+                }
+                return res.json();
+            })
+            .then((data) => {
+                // Handle successful authentication
+                console.log(data);
+                window.localStorage.setItem("UserID", JSON.stringify(data.userID));
+                window.localStorage.setItem("User", JSON.stringify(data.userName));
+                window.localStorage.setItem("Email", JSON.stringify(data.email));
+                console.log(data);
+                navigate("/home");
+            })
+            .catch((error) => {
+                console.error("Error during authentication:", error.message);
+                alert("Error during authentication. Please check your credentials and try again.");
+            });
     }
+
 
     return (
         <div className={"d-flex justify-content-center align-items-center min-vh-100"}>
             <h1 className={"h1 text-white text-center mr-20"}>Streaming Service</h1>
             <form onSubmit={handleSubmit} className={"loginForm"}>
                 <div className={"form-floating mb-3"}>
-                    <input type={"email"} required className={"form-control"} id={"floatingEmail"} placeholder={"bob123@gmail.com"}
-                            onChange={(e) => setEmail(e.target.value)}/>
+                    <input type={"email"} required className={"form-control"} id={"floatingEmail"}
+                           placeholder={"bob123@gmail.com"}
+                           onChange={(e) => setEmail(e.target.value)}/>
                     <label htmlFor={"floatingEmail"}>Email</label>
                 </div>
 
@@ -68,7 +98,8 @@ export default function Login() {
                 {/*    <label htmlFor={"floatingPassword"}>Password</label>*/}
                 {/*</div>*/}
                 <div>
-                    <Input.Password required prefix={<LockOutlined />} placeholder="Password" className={"h-10 site-form-item-icon"} id={"floatingPassword"}
+                    <Input.Password required prefix={<LockOutlined/>} placeholder="Password"
+                                    className={"h-10 site-form-item-icon"} id={"floatingPassword"}
                                     onChange={(e: any) => setPassword(e.target.value)}/>
                     <label htmlFor={"floatingPassword"}>Password</label>
                 </div>

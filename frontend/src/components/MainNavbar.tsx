@@ -51,12 +51,12 @@ export default function MainNavbar() {
             <nav
                 className={`sticky bg-slate-900 py-3 text-lg ${visible ? "max-lg:fixed max-lg:top-0 max-lg:h-screen max-lg:z-10" : "hidden"} lg:block`}>
                 <div
-                    className={"flex flex-col lg:flex-row flex-wrap lg:justify-between h-full w-screen px-5 max-xl:pt-20 lg:content-center gap-5"}>
+                    className={"flex flex-col lg:flex-row flex-wrap lg:justify-between items-center h-full w-screen px-5 max-xl:pt-20 lg:content-center gap-5"}>
                     <Link
                         className={`${visible ? "top-6 hidden" : "-top-14"} max-lg:absolute max-lg:visible text-white justify-self-start hover:opacity-70 basis-1/12 `}
                         to={`/home`}>{homeUser && homeUser.username}</Link>
 
-                    <div className={`place-self-start flex-grow flex flex-col lg:flex-row flex-wrap gap-5`}>
+                    <div className={`place-self-start flex-grow flex flex-col  lg:flex-row flex-wrap gap-5`}>
                         <Link className={"text-white hover:opacity-70"} to={"/home"} onClick={hide}>Home</Link>
                         <Link className={"text-white hover:opacity-70"} to={"/media"} onClick={hide}>Media</Link>
                         <Link className={"text-white hover:opacity-70"} to={"/watchList"}
@@ -64,6 +64,7 @@ export default function MainNavbar() {
                         <Link className={"text-white hover:opacity-70"} to={"/watchHistory"}
                               onClick={hide}>Watch&nbsp;History</Link>
                     </div>
+
                     <Link className={"text-white hover:opacity-70"} to={"/accountSettings"}
                           onClick={hide}>Account&nbsp;Settings</Link>
 

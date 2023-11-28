@@ -6,9 +6,12 @@
     "target": "es6",
     "moduleResolution": "node",
     "esModuleInterop": true,
-    "lib": ["es6"],
+    "lib": [
+      "es6",
+      "dom"
+    ],
     "allowJs": true,
-    "forceConsistentCasingInFileNames": true,
+    "forceConsistentCasingInFileNames": true
   },
   "include": [
     "**.ts"

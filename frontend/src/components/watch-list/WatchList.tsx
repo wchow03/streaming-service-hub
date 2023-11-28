@@ -70,7 +70,7 @@ export default function WatchList() {
 
 
     return (
-        <div className={`sm:px-6 md:px-24 lg:px-48 flex flex-col gap-3`}>
+        <div className={`px-3 sm:px-6 md:px-24 lg:px-48 flex flex-col gap-3`}>
             <h1 className={"h1 text-white text-center"}>Watch Lists</h1>
             <AddWatchList update={getWatchList}/>
             <DynamicCreateTable route={``} data={data} active={active}

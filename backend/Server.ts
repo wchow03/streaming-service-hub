@@ -51,8 +51,6 @@ export class Server {
 
         });
 
-        this.registerRoute();
-        this.loginRoute();
         this.subscribedRoute();
         this.nonSubscribedRoute();
         this.subscribeRoute();
@@ -65,6 +63,9 @@ export class Server {
         this.updatePassword();
         this.updateEmail();
         this.deleteAccount();
+
+        this.authenticateRegister();
+        this.authenticateLogin();
 
         // this.app.get("*", (req: Request, res: Response): void => {
         //     res.sendFile(path.resolve("./") + "/build/frontend/index.html");
@@ -270,35 +271,6 @@ export class Server {
         }
         query += ")";
         return query;
-    }
-
-    private registerRoute(): void {
-        this.app.post("/api/register", (req: Request, res: Response): void => {
-            const username = req.body.username;
-            const password = req.body.password;
-            const email = req.body.email;
-            const birthday = req.body.birthday;
-
-            this.db.query("INSERT INTO StreamingUser(username, password, email, birthday) VALUES (?,?,?,?)", [username, password, email, birthday], (err, result) => {
-                if (err) {
-                    console.log(err);
-                } else {
-                    res.json(result);
-                }
-            })
-        });
-    }
-
-    private loginRoute(): void {
-        this.app.get("/api/users", (req: Request, res: Response): void => {
-            this.db.query("SELECT userID, username, email, password FROM StreamingUser", (err, result) => {
-                if (err) {
-                    console.log(err);
-                } else {
-                    res.json(result);
-                }
-            });
-        });
     }
 
     private subscribedRoute(): void {
@@ -539,4 +511,77 @@ export class Server {
             })
         })
     }
+
+    private authenticateRegister(): void {
+        this.app.post("/api/authenticate/register", (req: Request, res: Response): void => {
+            const crypto = require('crypto');
+
+            console.log(req.body);
+
+            const username = req.body.username;
+            const password = req.body.password;
+            const email = req.body.email;
+            const birthday = req.body.birthday;
+
+            const salt = crypto.randomBytes(16).toString('hex');
+            const hashedPassword = crypto.createHash('sha512').update(password + salt).digest('hex');
+
+
+            const query: string =
+                `
+                    INSERT INTO StreamingUser (userName, email, birthday, passwordSalt, passwordHash)
+                    VALUES ('${username}', '${email}', '${birthday}', '${salt}', '${hashedPassword}');
+                `;
+
+            console.log(query);
+
+            this.db.query(query, (err, result) => {
+                if (err) {
+                    console.log(err);
+                    res.status(400).send({error: "Error authenticating"});
+                } else {
+                    res.json(result);
+                }
+            })
+        })
+    }
+
+    private authenticateLogin(): void {
+        this.app.post("/api/authenticate/login", (req: Request, res: Response): void => {
+            const crypto = require('crypto');
+            const email = req.body.email;
+            const password = req.body.password;
+
+            const query: string = `
+                SELECT passwordSalt, passwordHash, userID, email, userName
+                FROM StreamingUser
+                WHERE email = ?;
+            `;
+
+            this.db.query(query, [email], (err, result) => {
+                if (err) {
+                    console.error(err);
+                    res.status(400).send({error: "Error authenticating"});
+                } else {
+                    if (result.length === 0) {
+                        res.status(400).send({error: "User not found"});
+                        return;
+                    }
+
+                    const salt = result[0].passwordSalt;
+                    const hashedPassword = crypto.createHash('sha512').update(password + salt).digest('hex');
+
+                    console.log(hashedPassword);
+                    console.log(result[0].passwordHash);
+
+                    if (hashedPassword === result[0].passwordHash) {
+                        res.json({userID: result[0].userID, email: result[0].email, userName: result[0].userName});
+                    } else {
+                        res.status(400).send({error: "Incorrect password"});
+                    }
+                }
+            });
+        });
+    }
+
 }

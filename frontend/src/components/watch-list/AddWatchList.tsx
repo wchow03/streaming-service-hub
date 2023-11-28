@@ -42,9 +42,9 @@ export default function AddWatchList({update}: AddWatchListProps) {
     return (
         <form onSubmit={handleSubmit}>
             <div
-                className={`flex flex-col md:flex-row md:items-center w-full md:rounded-md focus-within:outline focus-within:outline-blue-500`}>
+                className={`flex flex-col md:flex-row md:items-center w-full rounded-md focus-within:outline focus-within:outline-blue-500`}>
                 <label
-                    className={`whitespace-nowrap bg-blue-500 text-white md:rounded-l-md py-1 px-3 border-r peer-focus:outline peer-focus:outline-blue-500`}>
+                    className={`whitespace-nowrap bg-blue-500 text-white max-md:rounded md:rounded-l-md py-1 px-3 border-r peer-focus:outline peer-focus:outline-blue-500`}>
                     Create Watchlist
                 </label>
                 <input
