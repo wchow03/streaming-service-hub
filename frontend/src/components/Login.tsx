@@ -1,6 +1,8 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import {useEffect, useState} from "react";
 import {Link, useNavigate} from "react-router-dom";
+import { LockOutlined } from '@ant-design/icons';
+import {Input} from "antd";
 
 export interface User {
     userID: number,
@@ -15,6 +17,7 @@ export default function Login() {
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [users, setUsers] = useState<User[]>([]);
+    // const [user, setUser] = useAtom(userData);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -37,6 +40,9 @@ export default function Login() {
                 window.localStorage.setItem("UserID", JSON.stringify(foundUser.userID))
                 window.localStorage.setItem("User", JSON.stringify(foundUser.username));
                 window.localStorage.setItem("Email", JSON.stringify(foundUser.email));
+
+                // setUser({username: foundUser.username, email: foundUser.email, id: foundUser.userID});
+
                 navigate("/home");
             } else {
                 alert("Wrong Password");
@@ -56,9 +62,14 @@ export default function Login() {
                     <label htmlFor={"floatingEmail"}>Email</label>
                 </div>
 
-                <div className={"form-floating mb-3"}>
-                    <input type={"password"} required className={"form-control"} id={"floatingPassword"} placeholder={"password"}
-                           onChange={(e) => setPassword(e.target.value)}/>
+                {/*<div className={"form-floating mb-3"}>*/}
+                {/*    <input type={"password"} required className={"form-control"} id={"floatingPassword"} placeholder={"password"}*/}
+                {/*           onChange={(e) => setPassword(e.target.value)}/>*/}
+                {/*    <label htmlFor={"floatingPassword"}>Password</label>*/}
+                {/*</div>*/}
+                <div>
+                    <Input.Password required prefix={<LockOutlined />} placeholder="Password" className={"h-10 site-form-item-icon"} id={"floatingPassword"}
+                                    onChange={(e: any) => setPassword(e.target.value)}/>
                     <label htmlFor={"floatingPassword"}>Password</label>
                 </div>
 

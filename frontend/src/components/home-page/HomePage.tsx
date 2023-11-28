@@ -4,8 +4,8 @@ import NotSubscribed from "./NotSubscribed.tsx";
 import {useState} from "react";
 
 export interface HomeUser {
-    username: string,
-    email: string
+    username?: string,
+    email?: string
     id?: number
 }
 

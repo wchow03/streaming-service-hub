@@ -116,7 +116,8 @@ CREATE TABLE WatchHistory
     dateAdded date NOT NULL,
     PRIMARY KEY (userID, mediaID, dateAdded),
     CONSTRAINT watchhistory_ibfk_1
-        FOREIGN KEY (userID) REFERENCES StreamingUser (userID),
+        FOREIGN KEY (userID) REFERENCES StreamingUser (userID)
+        ON DELETE CASCADE,
     CONSTRAINT watchhistory_ibfk_2
         FOREIGN KEY (mediaID) REFERENCES Media (mediaID)
 );

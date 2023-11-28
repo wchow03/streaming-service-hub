@@ -25,6 +25,7 @@ export default function MainNavbar() {
                         <Link className={"text-white hover:opacity-70"} to={"/watchList"}>Watch&nbsp;Lists</Link>
                         <Link className={"text-white hover:opacity-70"} to={"/watchHistory"}>Watch&nbsp;History</Link>
                     </div>
+                    <Link className={"text-white hover:opacity-70"} to={"/accountSettings"}>Account&nbsp;Settings</Link>
 
                     <Link
                         className={"text-white uppercase font-bold hover:bg-red-800 basis-1/12 bg-red-500 py-1 px-3 rounded-md transition-colors duration-150"}

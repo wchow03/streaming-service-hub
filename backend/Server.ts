@@ -61,6 +61,11 @@ export class Server {
         this.getShows();
         this.getMovies();
 
+        this.updateUsername();
+        this.updatePassword();
+        this.updateEmail();
+        this.deleteAccount();
+
         // this.app.get("*", (req: Request, res: Response): void => {
         //     res.sendFile(path.resolve("./") + "/build/frontend/index.html");
         // });
@@ -75,9 +80,9 @@ export class Server {
     // ******************************************************
     private initDB(): void {
         this.db = mysql.createConnection({
-            host: "10.254.0.1",
-            user: "guest",
-            password: "DT8Rbt38###mjR*@",
+            host: "localhost",
+            user: "root",
+            password: "%mysqlroot%",
             database: "streamingservice"
         });
 
@@ -468,4 +473,62 @@ export class Server {
         });
     }
 
+    private updateUsername(): void {
+        this.app.post("/api/account/updateUsername", (req: Request, res: Response): void => {
+            const id = req.body.userID;
+            const newUsername = req.body.userName;
+           this.db.query(`UPDATE Streaminguser SET userName = '${newUsername}' WHERE userID = ${id}`, (err, result) => {
+               if (err) {
+                   console.log(err);
+                   res.status(400).send({error: "Error updating username"});
+               } else {
+                   res.json(result);
+               }
+           })
+        });
+    }
+
+    private updatePassword(): void {
+        this.app.post("/api/account/updatePassword", (req: Request, res: Response): void => {
+            const id = req.body.userID;
+            const newPassword = req.body.password;
+            this.db.query(`UPDATE Streaminguser SET password = '${newPassword}' WHERE userID = ${id}`, (err, result) => {
+                if (err) {
+                    console.log(err);
+                    res.status(400).send({error: "Error updating password"});
+                } else {
+                    res.json(result);
+                }
+            })
+        })
+    }
+
+    private updateEmail(): void {
+        this.app.post("/api/account/updateEmail", (req: Request, res: Response): void => {
+            const id = req.body.userID;
+            const newEmail = req.body.email;
+            this.db.query(`UPDATE Streaminguser SET email = '${newEmail}' WHERE userID = ${id}`, (err, result) => {
+                if (err) {
+                    console.log(err);
+                    res.status(400).send({error: "Email already registered"});
+                } else {
+                    res.json(result);
+                }
+            })
+        })
+    }
+
+    private deleteAccount(): void {
+        this.app.delete("/api/account/delete", (req: Request, res: Response): void => {
+            const id = req.body.userID;
+            this.db.query(`DELETE FROM Streaminguser WHERE userID = ${id}`, (err, result) => {
+                if (err) {
+                    console.log(err);
+                    res.status(400).send({error: "Error deleting account"});
+                } else {
+                    res.json(result);
+                }
+            })
+        })
+    }
 }

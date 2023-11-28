@@ -1,11 +1,4 @@
 import 'tailwindcss/tailwind.css';
-// import DynamicCreateTable from "./components/DynamicCreateTable.tsx";
-// import SelectTable from "./components/SelectTable.tsx";
-//
-// import DynamicGetAll from "./functions/DynamicGetAll.tsx";
-//
-// import {useState} from 'react';
-// import DynamicAddForm from "./components/DynamicAddForm.tsx";
 import Login from "./components/Login.tsx";
 import "bootstrap/dist/css/bootstrap.min.css";
 import {Route, Routes} from "react-router-dom";
@@ -18,27 +11,9 @@ import {useEffect, useState} from "react";
 import DynamicStreamingService from "./components/dynamic/DynamicStreamingService.tsx";
 import WatchListMedia from "./components/watch-list/WatchListMedia.tsx";
 import Media from "./components/media/Media.tsx";
-
+import AccountSettings from "./components/AccountSettings.tsx";
 
 function App() {
-    // const [route, setRoute] = useState("media");
-    // const [data, setData] = useState([]);
-    //
-    // DynamicGetAll(route, setData);
-
-    // return (
-    //     <div className={`px-[10%] py-10 flex flex-col gap-5`}>
-    //         <h1 className={`text-3xl font-bold text-white pb-10 uppercase`}> Database </h1>
-    //         <SelectTable setRoute={setRoute} />
-    //         <DynamicCreateTable route={route} data={data}/>
-    //         <DynamicAddForm route={route} data={data}/>
-    //     </div>
-    // )
-    // return (
-    //   <div>
-    //       <Login />
-    //   </div>
-    // );
 
     const [streamingServices, setStreamingServices] = useState([] as string[]);
 
@@ -77,6 +52,7 @@ function App() {
                 <Route path={'/home'} element={<HomePage/>}></Route>
                 <Route path={'/watchlist'} element={<WatchList/>}></Route>
                 <Route path={'/watchhistory'} element={<WatchHistory/>}></Route>
+                <Route path={'/accountSettings'} element={<AccountSettings />} /><Route />
                 <Route path={'/media'} element={<Media/>}></Route>
 
                 <Route path={`/service/:serviceName`} element={<DynamicStreamingService/>}></Route>
