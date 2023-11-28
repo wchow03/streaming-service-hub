@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 
 type FiltersProps = {
     headers?: string[],
@@ -26,6 +26,24 @@ export default function Filters(
     const [genres, setGenres] = useState([] as string[]);
 
     const [visible, setVisible] = useState("");
+
+    const componentRef = useRef<HTMLDivElement | null>(null);
+
+    useEffect(() => {
+        const handleClickOutside = (event: any) => {
+            if (componentRef.current && !componentRef.current.contains(event.target)) {
+                setVisible("");
+            }
+        };
+
+        // Attach the event listener when the component mounts
+        document.addEventListener('mousedown', handleClickOutside);
+
+        // Detach the event listener when the component unmounts
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
 
 
     useEffect(() => {
@@ -110,9 +128,11 @@ export default function Filters(
             });
     }, []);
 
-
+    // Component Render
+    // ******************************************************
     return (
-        <div className={`w-full bg-white rounded p-1 `}>
+        <div className={`w-full bg-white rounded p-1 `}
+             ref={componentRef}>
             {/* Created sort options for each column*/}
             <form
                 className={`divide-x-2 w-full flex flex-col md:flex-row justify-start justify-items-center text-white gap-2`}>
@@ -139,6 +159,8 @@ export default function Filters(
         </div>
     )
 
+    // Checkbox Component
+    // ******************************************************
     function CheckBox({name, checked, filtered, setFiltered}: any) {
 
         function onChange() {
@@ -160,6 +182,8 @@ export default function Filters(
         )
     }
 
+    // FilterGroup Component
+    // ******************************************************
     function FilterGroup({label, complete, filtered, setFiltered, visible, setVisible}: any) {
 
         function toggleVisible() {
@@ -206,7 +230,7 @@ export default function Filters(
 
                 </button>
                 <form
-                    className={`${visible === label ? "" : "hidden"} text-black top-10 absolute w-full transition-opacity duration-300 flex flex-col border border-gray-900 rounded-b-sm bg-white overflow-y-scroll divide-y-2 `}>
+                    className={`${visible === label ? "" : "hidden"} max-h-[33vh] text-black top-10 absolute w-full transition-opacity duration-300 flex flex-col border border-gray-900 rounded-b-sm bg-white overflow-y-scroll divide-y-2 `}>
                     {
                         complete.map((item: any, index: number) => {
                             return (

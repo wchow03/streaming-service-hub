@@ -398,7 +398,7 @@ export class Server {
                                         m.studioName,
                                         m.serviceName,
                                         s.numberOfSeasons,
-                                        GROUP_CONCAT(g.genreName) AS genreList
+                                        GROUP_CONCAT(g.genreName) AS genres
                                  FROM Media m
                                           JOIN TVShow s
                                                ON m.mediaID = s.mediaID
@@ -438,7 +438,7 @@ export class Server {
                                         m.serviceName,
                                         f.version,
                                         f.length,
-                                        GROUP_CONCAT(g.genreName) AS genreList
+                                        GROUP_CONCAT(g.genreName) AS genres
                                  FROM Media m
                                           JOIN Movie f
                                                ON m.mediaID = f.mediaID
