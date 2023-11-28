@@ -132,6 +132,7 @@ CREATE TABLE WatchList
     userID   INT          NOT NULL,
     CONSTRAINT watchlist_ibfk_1
         FOREIGN KEY (userID) REFERENCES StreamingUser (userID)
+            ON DELETE CASCADE
 );
 
 CREATE INDEX userID
@@ -143,7 +144,10 @@ CREATE TABLE AddToList
     mediaID INT NOT NULL,
     PRIMARY KEY (mediaID, listID),
     CONSTRAINT addtolist_ibfk_1
-        FOREIGN KEY (mediaID) REFERENCES Media (mediaID)
+        FOREIGN KEY (mediaID) REFERENCES Media (mediaID),
+    CONSTRAINT addtolist_ibfk_2
+        FOREIGN KEY (listID) REFERENCES WatchList (listID)
+            ON DELETE CASCADE
 );
 
 CREATE TABLE Genre

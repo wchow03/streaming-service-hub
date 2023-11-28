@@ -26,8 +26,9 @@ export default function MainNavbar() {
                         <Link className={"text-white hover:opacity-70"} to={"/watchHistory"}>Watch&nbsp;History</Link>
                     </div>
 
-                    <Link className={"text-red-200 uppercase font-bold hover:text-red-600 basis-1/12"}
-                          to={"/"}>Log&nbsp;out</Link>
+                    <Link
+                        className={"text-white uppercase font-bold hover:bg-red-800 basis-1/12 bg-red-500 py-1 px-3 rounded-md transition-colors duration-150"}
+                        to={"/"}>Log&nbsp;out</Link>
                 </div>
             </nav>
         </>

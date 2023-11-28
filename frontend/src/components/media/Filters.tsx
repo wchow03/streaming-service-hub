@@ -115,7 +115,7 @@ export default function Filters(
         return (
             <div
                 onClick={onChange}
-                className="flex flex-row items-center p-2 border-b border-gray-500 hover:opacity-70 hover:cursor-pointer">
+                className="flex flex-row items-center p-2 hover:opacity-70 hover:cursor-pointer">
                 <input type="checkbox" className="border-blue-500" checked={checked} onChange={onChange}/>
                 <label className="ml-2 text-black text-sm pr-10 whitespace-nowrap hover:cursor-pointer">{name}</label>
             </div>
@@ -168,7 +168,7 @@ export default function Filters(
 
                 </button>
                 <form
-                    className={`${visible === label ? "" : "hidden"} text-black top-10 absolute w-full transition-opacity duration-300 flex flex-col border border-gray-900 rounded-b-sm bg-white overflow-y-scroll `}>
+                    className={`${visible === label ? "" : "hidden"} text-black top-10 absolute w-full transition-opacity duration-300 flex flex-col border border-gray-900 rounded-b-sm bg-white overflow-y-scroll divide-y-2 `}>
                     {
                         complete.map((item: any, index: number) => {
                             return (
