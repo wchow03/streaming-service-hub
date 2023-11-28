@@ -15,12 +15,12 @@ export default function SearchBar({values, handlers, children}: SearchBarProps) 
     let handleSubmit = handlers[2];
 
     return (
-        <div className={`flex flex-col w-full gap-2`}>
+        <div className={`flex flex-col w-full gap-2 border-none`}>
             <form onSubmit={handleSubmit}
-                  className={`flex flex-row items-stretch text-white justify-center w-full gap-1`}>
+                  className={`flex flex-row items-stretch text-white justify-center w-full rounded border border-blue-500`}>
 
                 <select
-                    className={`rounded-l px-3 text-black bg-white border-r outline ${searchFocus ? "outline-blue-500" : "outline-white"}`}
+                    className={`rounded-l px-3 text-white bg-blue-500 border ${searchFocus ? "outline outline-blue-500" : "border-blue-500"}`}
                     onChange={handleMediaTypeChange}
                     name="mediaType">
                     <option value="movie">Movies</option>
@@ -29,7 +29,7 @@ export default function SearchBar({values, handlers, children}: SearchBarProps) 
 
                 <input
                     value={search}
-                    className={`pl-3 text-black flex-grow outline focus:outline-blue-500 outline-white`}
+                    className={`pl-3 text-black flex-grow border border-white focus:outline focus:outline-blue-500 peer`}
                     type={`text`}
                     placeholder={`Search`}
                     onFocus={() => setSearchFocus(true)}
@@ -38,7 +38,7 @@ export default function SearchBar({values, handlers, children}: SearchBarProps) 
                 />
 
                 <button
-                    className={`px-2 py-2 rounded-r outline bg-blue-500 outline-blue-500`}
+                    className={`px-2 py-2 rounded-r border bg-blue-500 border-blue-500 peer-focus:outline peer-focus:outline-blue-500`}
                     type={`submit`}>
                     <svg className="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
                          viewBox="0 0 20 20">

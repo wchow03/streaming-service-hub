@@ -1,11 +1,13 @@
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 
 type FiltersProps = {
     headers?: string[],
     filteredServices: string[],
     setFilteredServices: (filteredServices: string[]) => void,
     filteredStudios: string[],
-    setFilteredStudios: (filteredStudios: string[]) => void
+    setFilteredStudios: (filteredStudios: string[]) => void,
+    filteredGenres: string[],
+    setFilteredGenres: (filteredGenres: string[]) => void,
 }
 
 export default function Filters(
@@ -13,12 +15,36 @@ export default function Filters(
         filteredServices,
         setFilteredServices,
         filteredStudios,
-        setFilteredStudios
+        setFilteredStudios,
+        filteredGenres,
+        setFilteredGenres,
     }: FiltersProps) {
 
 
     const [services, setServices] = useState([] as string[]);
     const [studios, setStudios] = useState([] as string[]);
+    const [genres, setGenres] = useState([] as string[]);
+
+    const [visible, setVisible] = useState("");
+
+    const componentRef = useRef<HTMLDivElement | null>(null);
+
+    useEffect(() => {
+        const handleClickOutside = (event: any) => {
+            if (componentRef.current && !componentRef.current.contains(event.target)) {
+                setVisible("");
+            }
+        };
+
+        // Attach the event listener when the component mounts
+        document.addEventListener('mousedown', handleClickOutside);
+
+        // Detach the event listener when the component unmounts
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
 
     useEffect(() => {
         setFilteredStudios(studios);
@@ -76,11 +102,37 @@ export default function Filters(
             });
     }, []);
 
-    const [visible, setVisible] = useState("");
+    // Fetch all Genres
+    // ******************************************************
+    useEffect(() => {
+        const select = "genreName";
+        const body = {SELECT: select};
 
+        fetch(`http://localhost:8080/api/genre`,
+            {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(body),
 
+            })
+            .then(response => response.json())
+            .then(result => {
+                const tempGenres = result.map((genre: any) => genre.genreName);
+                console.log("All Genres: " + tempGenres);
+                setGenres(Array.from(new Set(tempGenres)));
+            })
+            .catch(error => {
+                console.log("ERRRORRRR: " + error);
+            });
+    }, []);
+
+    // Component Render
+    // ******************************************************
     return (
-        <div className={`w-full bg-white rounded p-1 `}>
+        <div className={`w-full bg-white rounded p-1 `}
+             ref={componentRef}>
             {/* Created sort options for each column*/}
             <form
                 className={`divide-x-2 w-full flex flex-col md:flex-row justify-start justify-items-center text-white gap-2`}>
@@ -97,10 +149,18 @@ export default function Filters(
                              setFiltered={setFilteredStudios}
                              visible={visible} setVisible={setVisible}/>
 
+                <FilterGroup label={`Genres`}
+                             complete={genres}
+                             filtered={filteredGenres}
+                             setFiltered={setFilteredGenres}
+                             visible={visible} setVisible={setVisible}/>
+
             </form>
         </div>
     )
 
+    // Checkbox Component
+    // ******************************************************
     function CheckBox({name, checked, filtered, setFiltered}: any) {
 
         function onChange() {
@@ -122,6 +182,8 @@ export default function Filters(
         )
     }
 
+    // FilterGroup Component
+    // ******************************************************
     function FilterGroup({label, complete, filtered, setFiltered, visible, setVisible}: any) {
 
         function toggleVisible() {
@@ -134,7 +196,7 @@ export default function Filters(
         }
 
         return (
-            <div className={`relative flex flex-col gap-1 basis-1/2 md:w-1/2`}>
+            <div className={`relative flex flex-col gap-1 basis-1/3 md:w-1/3`}>
                 <button
                     type={`button`}
                     className={`flex flex-row gap-2 items-center font-bolds text-black text-sm w-full py-2 px-3 text-left rounded transition-colors duration-300 hover:outline-teal-300 ${visible === label && "outline-teal-600"}`}
@@ -168,7 +230,7 @@ export default function Filters(
 
                 </button>
                 <form
-                    className={`${visible === label ? "" : "hidden"} text-black top-10 absolute w-full transition-opacity duration-300 flex flex-col border border-gray-900 rounded-b-sm bg-white overflow-y-scroll divide-y-2 `}>
+                    className={`${visible === label ? "" : "hidden"} max-h-[33vh] text-black top-10 absolute w-full transition-opacity duration-300 flex flex-col border border-gray-900 rounded-b-sm bg-white overflow-y-scroll divide-y-2 `}>
                     {
                         complete.map((item: any, index: number) => {
                             return (

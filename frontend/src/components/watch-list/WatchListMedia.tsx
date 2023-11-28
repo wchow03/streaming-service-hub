@@ -2,6 +2,7 @@ import {useEffect, useState} from "react";
 import {HomeUser} from "../home-page/HomePage.tsx";
 import {useParams} from "react-router-dom";
 import DynamicCreateTable from "../dynamic/DynamicCreateTable.tsx";
+import DeleteMediaFromList from "./DeleteMediaFromList.tsx";
 
 export default function WatchListMedia() {
     const [homeUser, setHomeUser] = useState<HomeUser>();
@@ -36,11 +37,40 @@ export default function WatchListMedia() {
             });
     }
 
+    const [active, setActive] = useState(-1);
+    const [mediaID, setMediaID] = useState(-1);
+
+    function handleListItemClick(args: any, index: number) {
+        console.log(args);
+        if (active === index) {
+            setActive(-1);
+            setMediaID(-1);
+            return;
+        } else {
+            setActive(index);
+            setMediaID(args.mediaID);
+            console.log(args.mediaID);
+        }
+    }
+
+
     return (
-        <div>
+        <div className={`flex flex-col gap-5 pb-10`}>
             <h1 className={`h1 text-white text-center`}>{watchlistName}</h1>
 
-            <DynamicCreateTable route={``} data={data} className={`sm:px-6 md:px-24 lg:px-48`}/>
+            <DynamicCreateTable
+                route={``}
+                data={data}
+                className={`sm:px-6 md:px-24 lg:px-48`}
+                handleClick={handleListItemClick}
+                active={active}
+            />
+
+            <DeleteMediaFromList
+                className={`sm:px-6 md:px-24 lg:px-48`}
+                update={getWatchListItems}
+                mediaID={mediaID}
+                listID={watchlistID}/>
         </div>
     );
 }
