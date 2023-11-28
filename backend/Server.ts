@@ -80,9 +80,9 @@ export class Server {
     // ******************************************************
     private initDB(): void {
         this.db = mysql.createConnection({
-            host: "localhost",
-            user: "root",
-            password: "%mysqlroot%",
+            host: "10.254.0.1",
+            user: "guest",
+            password: "DT8Rbt38###mjR*@",
             database: "streamingservice"
         });
 
@@ -477,14 +477,16 @@ export class Server {
         this.app.post("/api/account/updateUsername", (req: Request, res: Response): void => {
             const id = req.body.userID;
             const newUsername = req.body.userName;
-           this.db.query(`UPDATE Streaminguser SET userName = '${newUsername}' WHERE userID = ${id}`, (err, result) => {
-               if (err) {
-                   console.log(err);
-                   res.status(400).send({error: "Error updating username"});
-               } else {
-                   res.json(result);
-               }
-           })
+            this.db.query(`UPDATE Streaminguser
+                           SET userName = '${newUsername}'
+                           WHERE userID = ${id}`, (err, result) => {
+                if (err) {
+                    console.log(err);
+                    res.status(400).send({error: "Error updating username"});
+                } else {
+                    res.json(result);
+                }
+            })
         });
     }
 
@@ -492,7 +494,9 @@ export class Server {
         this.app.post("/api/account/updatePassword", (req: Request, res: Response): void => {
             const id = req.body.userID;
             const newPassword = req.body.password;
-            this.db.query(`UPDATE Streaminguser SET password = '${newPassword}' WHERE userID = ${id}`, (err, result) => {
+            this.db.query(`UPDATE Streaminguser
+                           SET password = '${newPassword}'
+                           WHERE userID = ${id}`, (err, result) => {
                 if (err) {
                     console.log(err);
                     res.status(400).send({error: "Error updating password"});
@@ -507,7 +511,9 @@ export class Server {
         this.app.post("/api/account/updateEmail", (req: Request, res: Response): void => {
             const id = req.body.userID;
             const newEmail = req.body.email;
-            this.db.query(`UPDATE Streaminguser SET email = '${newEmail}' WHERE userID = ${id}`, (err, result) => {
+            this.db.query(`UPDATE Streaminguser
+                           SET email = '${newEmail}'
+                           WHERE userID = ${id}`, (err, result) => {
                 if (err) {
                     console.log(err);
                     res.status(400).send({error: "Email already registered"});
@@ -521,7 +527,9 @@ export class Server {
     private deleteAccount(): void {
         this.app.delete("/api/account/delete", (req: Request, res: Response): void => {
             const id = req.body.userID;
-            this.db.query(`DELETE FROM Streaminguser WHERE userID = ${id}`, (err, result) => {
+            this.db.query(`DELETE
+                           FROM Streaminguser
+                           WHERE userID = ${id}`, (err, result) => {
                 if (err) {
                     console.log(err);
                     res.status(400).send({error: "Error deleting account"});
