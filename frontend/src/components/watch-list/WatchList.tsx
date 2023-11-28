@@ -5,6 +5,7 @@ import {useNavigate} from "react-router-dom";
 import AddWatchList from "./AddWatchList.tsx";
 import DeleteWatchList from "./DeleteWatchList.tsx";
 import ViewWatchList from "./ViewWatchList.tsx";
+import UpdateWatchList from "./UpdateWatchList.tsx";
 
 export default function WatchList() {
     const [homeUser, setHomeUser] = useState<HomeUser>();
@@ -76,6 +77,7 @@ export default function WatchList() {
                                 handleClick={handleListItemClick}/>
             <DeleteWatchList update={getWatchList} watchListID={watchListID}/>
             <ViewWatchList watchListID={watchListID} watchListName={watchListName}/>
+            <UpdateWatchList update={getWatchList} watchListID={watchListID} watchListName={watchListName}/>
         </div>
     );
 }

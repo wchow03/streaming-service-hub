@@ -4,6 +4,7 @@ import {getMovies} from "./Movies.tsx";
 import {getShows} from "./Shows.tsx";
 import SearchBar from "./SearchBar.tsx";
 import Filters from "./Filters.tsx";
+import AddToWatchList from "./AddToWatchList.tsx";
 
 
 export default function Media() {
@@ -14,6 +15,23 @@ export default function Media() {
     const [submit, setSubmit] = useState(false);
     const [mediaType, setMediaType] = useState("movie");
     const [seed, setSeed] = useState(0);
+
+    // Table Helpers
+    // ******************************************************
+    const [active, setActive] = useState<number>(-1);
+    const [mediaID, setMediaID] = useState<number>(-1);
+
+    function handleListItemClick(args: any, index: number) {
+        console.log(args);
+        if (active === index) {
+            setActive(-1);
+            setMediaID(-1);
+            return;
+        } else {
+            setActive(index);
+            setMediaID(args.mediaID);
+        }
+    }
 
     // Filters
     // ******************************************************
@@ -194,10 +212,13 @@ export default function Media() {
                     setFilteredStudios={setFilteredStudios}
                     filteredStudios={filteredStudios}
                 />
+
+                <AddToWatchList mediaID={mediaID}/>
             </div>
 
 
-            <DynamicCreateTable key={seed} route={mediaType} data={data}/>
+            <DynamicCreateTable handleClick={handleListItemClick} key={seed} route={mediaType} data={data}
+                                active={active}/>
 
         </div>
     )

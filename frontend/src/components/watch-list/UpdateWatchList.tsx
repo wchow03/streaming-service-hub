@@ -1,29 +1,47 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 
-type AddWatchListProps = {
-    update: () => void;
+type UpdateWatchListProps = {
+    update: any,
+    watchListID: number | undefined,
+    watchListName: string | undefined
 }
 
-export default function AddWatchList({update}: AddWatchListProps) {
+export default function UpdateWatchList({update, watchListID, watchListName}: UpdateWatchListProps) {
 
-    const userID = window.localStorage.getItem("UserID")!;
+    // Initialize State
+    // ******************************************************
+    const [name, setName] = useState("");
 
-    const [listName, setListName] = useState("");
+    useEffect(() => {
+        setName(watchListName!);
+    }, [watchListName]);
 
-    function handleListNameChange(event: any) {
-        setListName(event.target.value);
+    // Handle Input Change
+    // ******************************************************
+    function handleChange(event: any) {
+        setName(event.target.value);
     }
 
+    // Handle Form Submission
+    // ******************************************************
     function handleSubmit(event: any) {
         event.preventDefault();
 
+        if (!watchListID) {
+            return;
+        }
+
         const body = {
-            "listName": listName,
-            "userID": userID
+            "SET": {
+                "listName": name,
+            },
+            "WHERE": {
+                "listID": watchListID
+            }
         };
 
-        fetch("http://localhost:8080/api/watchlist/add", {
-            method: "POST",
+        fetch("http://localhost:8080/api/watchlist/update", {
+            method: "PUT",
             headers: {
                 "Content-Type": "application/json"
             },
@@ -45,20 +63,19 @@ export default function AddWatchList({update}: AddWatchListProps) {
                 className={`flex flex-row items-center w-full rounded-md focus-within:outline focus-within:outline-blue-500`}>
                 <label
                     className={`bg-blue-500 text-white rounded-l-md py-1 px-3 border-r peer-focus:outline peer-focus:outline-blue-500`}>
-                    Create Watchlist
+                    Update Watchlist Name
                 </label>
                 <input
-                    value={listName}
+                    onChange={handleChange}
+                    value={name}
                     placeholder={`Enter a name for your watchlist`}
-                    onChange={handleListNameChange}
                     className={`bg-white py-1 flex-grow peer px-1`}
                     type="text"/>
                 <button
                     className={`bg-blue-500 text-white hover:bg-blue-800 transition-colors duration-300 px-4 py-1 rounded-r-md border-l peer-focus:outline peer-focus:outline-blue-500`}>
-                    Add
+                    Update
                 </button>
             </div>
         </form>
-
     )
 }
