@@ -1,11 +1,4 @@
 import 'tailwindcss/tailwind.css';
-// import DynamicCreateTable from "./components/DynamicCreateTable.tsx";
-// import SelectTable from "./components/SelectTable.tsx";
-//
-// import DynamicGetAll from "./functions/DynamicGetAll.tsx";
-//
-// import {useState} from 'react';
-// import DynamicAddForm from "./components/DynamicAddForm.tsx";
 import Login from "./components/Login.tsx";
 import "bootstrap/dist/css/bootstrap.min.css";
 import {Route, Routes} from "react-router-dom";
@@ -19,7 +12,6 @@ import DynamicStreamingService from "./components/dynamic/DynamicStreamingServic
 import ViewWatchList from "./components/watch-list/ViewWatchList.tsx";
 import Media from "./components/media/Media.tsx";
 import AccountSettings from "./components/AccountSettings.tsx";
-
 
 function App() {
 

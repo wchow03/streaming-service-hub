@@ -17,6 +17,7 @@ export default function Login() {
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [users, setUsers] = useState<User[]>([]);
+    // const [user, setUser] = useAtom(userData);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -39,6 +40,9 @@ export default function Login() {
                 window.localStorage.setItem("UserID", JSON.stringify(foundUser.userID))
                 window.localStorage.setItem("User", JSON.stringify(foundUser.username));
                 window.localStorage.setItem("Email", JSON.stringify(foundUser.email));
+
+                // setUser({username: foundUser.username, email: foundUser.email, id: foundUser.userID});
+
                 navigate("/home");
             } else {
                 alert("Wrong Password");

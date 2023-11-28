@@ -1,6 +1,5 @@
-import {Button, Input, Modal} from "antd";
+import {Alert, Button, Input, Modal} from "antd";
 import {useState} from "react";
-import {setHomeUser} from "./MainNavbar.tsx";
 
 export default function AccountSettings() {
     const [newUsername, setUsername] = useState();
@@ -13,6 +12,13 @@ export default function AccountSettings() {
     const userID = window.localStorage.getItem("UserID");
     const email = window.localStorage.getItem("Email");
 
+    const [usernameSuccess, setUsernameSuccess] = useState(false);
+    const [passwrodSuccess, setPasswordSuccess] = useState(false);
+    const [emailSuccess, setEmailSuccess] = useState(false);
+    const [usernameError, setUsernameError] = useState(false);
+    const [passwordError, setPasswordError] = useState(false);
+    const [emailError, setEmailError] = useState(false);
+
     const showModal = () => {
         setOpen(true);
     };
@@ -22,7 +28,6 @@ export default function AccountSettings() {
         console.log("HandledOK")
         setLoading(false);
         setOpen(false);
-        window.location.reload();
         // reset();
     };
 
@@ -30,29 +35,65 @@ export default function AccountSettings() {
         setOpen(false);
     };
 
-    const handleUsernameSubmit = async () => {
-        setLoading(true);
+    const handleUsernameSubmit = () => {
         const data = {userID: userID, userName: newUsername};
-        await fetch("http://localhost:8080/api/account/updateUsername", {
+        fetch("http://localhost:8080/api/account/updateUsername", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify(data)
         })
-        setLoading(false);
-        setOpen(false);
-        window.localStorage.setItem("User", JSON.stringify(newUsername));
+            .then((res) => {
+                if (res.status === 400) {
+                    setUsernameError(true);
+                } else {
+                    window.localStorage.setItem("User", JSON.stringify(newUsername));
+                    setUsernameSuccess(true);
+                }
+                setTimeout(() => window.location.reload(), 1500);
+            })
+            .catch(() => setUsernameError(true));
     };
 
     const handlePasswordSubmit = () => {
-        console.log(newPassword);
-        // window.localStorage.setItem("Email", JSON.stringify("admin@gmail.com"));
+        const data = {userID: userID, password: newPassword};
+        fetch("http://localhost:8080/api/account/updatePassword", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        })
+            .then((res) => {
+                if (res.status === 400) {
+                    setPasswordError(true);
+                } else {
+                    setPasswordSuccess(true);
+                }
+                setTimeout(() => window.location.reload(), 1500);
+            })
+            .catch(() => setPasswordError(true));
     };
 
     const handleEmailSubmit = () => {
-        console.log(newEmail);
-        // window.localStorage.setItem("Email", JSON.stringify("admin@gmail.com"));
+        const data = {userID: userID, email: newEmail};
+        fetch("http://localhost:8080/api/account/updateEmail", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        })
+            .then((res) => {
+                if (res.status === 400) {
+                    setEmailError(true);
+                } else {
+                    setEmailSuccess(true);
+                }
+                setTimeout(() => window.location.reload(), 1500);
+            })
+            .catch(() => setEmailError(true));
     };
 
     return (
@@ -63,17 +104,23 @@ export default function AccountSettings() {
 
                     <div className={"row justify-content-center m-2"}>
                         <Input required className={"col-2 mr-2"} placeholder="Enter new username" onChange={(e) => setUsername(e.target.value)}/>
-                        <button onClick={handleUsernameSubmit} className={"btn btn-primary col-2"}>Save changes</button>
+                        <button onClick={handleUsernameSubmit} className={"btn btn-primary col-2 mr-2"}>Save changes</button>
+                        {usernameSuccess && <Alert className={"col-2"} message="Username successfully changed" type="success" />}
+                        {usernameError && <Alert className={"col-2"} message="Error changing username" type="error" />}
                     </div>
 
                     <div className={"row justify-content-center m-2"}>
-                        <Input className={"col-2 mr-2"} placeholder="Enter new password" onChange={(e) => setPassword(e.target.value)}/>
-                        <button onClick={handlePasswordSubmit} className={"btn btn-primary col-2"}>Save changes</button>
+                        <Input.Password className={"col-2 mr-2"} placeholder="Enter new password" onChange={(e) => setPassword(e.target.value)}/>
+                        <button onClick={handlePasswordSubmit} className={"btn btn-primary col-2 mr-2"}>Save changes</button>
+                        {passwrodSuccess && <Alert className={"col-2"} message="Password successfully changed" type="success" />}
+                        {passwordError && <Alert className={"col-2"} message="Error changing password" type="error" />}
                     </div>
 
                     <div className={"row justify-content-center m-2"}>
                         <Input className={"col-2 mr-2"} placeholder="Enter new email" onChange={(e) => setEmail(e.target.value)}/>
-                        <button onClick={handleEmailSubmit} className={"btn btn-primary col-2"}>Save changes</button>
+                        <button onClick={handleEmailSubmit} className={"btn btn-primary col-2 mr-2"}>Save changes</button>
+                        {emailSuccess && <Alert className={"col-2"} message="Email successfully changed" type="success" />}
+                        {emailError && <Alert className={"col-2"} message="Email already registered" type="error" />}
                     </div>
 
                     <div className={"justify-content-center m-2"}>

@@ -51,8 +51,8 @@ export class Server {
         this.getMovies();
 
         this.updateUsername();
-        // this.updatePassword();
-        // this.updateEmail();
+        this.updatePassword();
+        this.updateEmail();
 
         // this.app.get("*", (req: Request, res: Response): void => {
         //     res.sendFile(path.resolve("./") + "/build/frontend/index.html");
@@ -327,6 +327,7 @@ export class Server {
            this.db.query(`UPDATE Streaminguser SET userName = '${newUsername}' WHERE userID = ${id}`, (err, result) => {
                if (err) {
                    console.log(err);
+                   res.status(400).send({error: "Error updating username"});
                } else {
                    res.json(result);
                }
@@ -334,4 +335,33 @@ export class Server {
         });
     }
 
+    private updatePassword(): void {
+        this.app.post("/api/account/updatePassword", (req: Request, res: Response): void => {
+            const id = req.body.userID;
+            const newPassword = req.body.password;
+            this.db.query(`UPDATE Streaminguser SET password = '${newPassword}' WHERE userID = ${id}`, (err, result) => {
+                if (err) {
+                    console.log(err);
+                    res.status(400).send({error: "Error updating password"});
+                } else {
+                    res.json(result);
+                }
+            })
+        })
+    }
+
+    private updateEmail(): void {
+        this.app.post("/api/account/updateEmail", (req: Request, res: Response): void => {
+            const id = req.body.userID;
+            const newEmail = req.body.email;
+            this.db.query(`UPDATE Streaminguser SET email = '${newEmail}' WHERE userID = ${id}`, (err, result) => {
+                if (err) {
+                    console.log(err);
+                    res.status(400).send({error: "Email already registered"});
+                } else {
+                    res.json(result);
+                }
+            })
+        })
+    }
 }
