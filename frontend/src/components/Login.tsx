@@ -68,7 +68,7 @@ export default function Login() {
                 {/*    <label htmlFor={"floatingPassword"}>Password</label>*/}
                 {/*</div>*/}
                 <div>
-                    <Input.Password prefix={<LockOutlined />} placeholder="Password" className={"h-10 site-form-item-icon"} id={"floatingPassword"}
+                    <Input.Password required prefix={<LockOutlined />} placeholder="Password" className={"h-10 site-form-item-icon"} id={"floatingPassword"}
                                     onChange={(e: any) => setPassword(e.target.value)}/>
                     <label htmlFor={"floatingPassword"}>Password</label>
                 </div>

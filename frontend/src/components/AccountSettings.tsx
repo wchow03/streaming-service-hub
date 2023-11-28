@@ -1,7 +1,9 @@
-import {Alert, Button, Input, Modal} from "antd";
+import {Alert, Button, Form, Input, Modal} from "antd";
 import {useState} from "react";
+import {useNavigate} from "react-router-dom";
 
 export default function AccountSettings() {
+    const navigate = useNavigate();
     const [newUsername, setUsername] = useState();
     const [newPassword, setPassword] = useState();
     const [newEmail, setEmail] = useState();
@@ -17,6 +19,8 @@ export default function AccountSettings() {
     const [usernameError, setUsernameError] = useState(false);
     const [passwordError, setPasswordError] = useState(false);
     const [emailError, setEmailError] = useState(false);
+    const [deleteAccountSuccess, setDeleteAccountSuccess] = useState(false);
+    const [deleteAccountError, setDeleteAccountError] = useState(false);
 
     const showModal = () => {
         setOpen(true);
@@ -24,10 +28,24 @@ export default function AccountSettings() {
 
     const handleOk = async () => {
         setLoading(true);
-        console.log("HandledOK")
-        setLoading(false);
-        setOpen(false);
-        // reset();
+        fetch("http://localhost:8080/api/account/delete", {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({userID: userID})
+        })
+            .then((res) => {
+                if (res.status === 400) {
+                    setDeleteAccountError(true);
+                } else {
+                    setLoading(false);
+                    setOpen(false);
+                    setDeleteAccountSuccess(true);
+                    setTimeout(() => navigate("/"), 2000);
+                }
+            })
+            .catch(() => setDeleteAccountError(true));
     };
 
     const handleCancel = () => {
@@ -97,39 +115,48 @@ export default function AccountSettings() {
 
     return (
         <>
+            <div className={"container justify-content-center align-items-center text-center"}>
+                {usernameSuccess && <Alert message="Username successfully changed" type="success" />}
+                {usernameError && <Alert message="Error changing username" type="error" />}
+                {passwordSuccess && <Alert message="Password successfully changed" type="success" />}
+                {passwordError && <Alert message="Error changing password" type="error" />}
+                {emailSuccess && <Alert message="Email successfully changed" type="success" />}
+                {emailError && <Alert message="Email already registered" type="error" />}
+                {deleteAccountSuccess && <Alert message="Account successfully deleted, sad to see you go :(" type="success" />}
+                {deleteAccountError && <Alert message="Error deleting account" type="error" />}
+            </div>
             <h1 className={"h1 text-white text-center"}>Account Settings</h1>
             <div className="container text-center text-white">
                 <div className="flex flex-col gap-2">
+                    <Form onFinish={handleUsernameSubmit} className={"row justify-content-center m-2"}>
+                        <Form.Item name={"Update username"}
+                                   label={<label className={"text-white"}>Update username</label>}
+                                   rules={[{required: true, message: 'Please input a username'}]}
+                                   className={"col-3 mr-2"}>
+                            <Input onChange={(e: any) => setUsername(e.target.value)} placeholder={"Enter a new username"}/>
+                        </Form.Item>
+                        <button type={"submit"} className={"btn btn-primary col-2 h-10"}>Submit changes</button>
+                    </Form>
 
-                    <div className={"row justify-content-center m-2"}>
-                        <Input required className={"col-2 mr-2"} placeholder="Enter new username"
-                               onChange={(e: any) => setUsername(e.target.value)}/>
+                    <Form onFinish={handlePasswordSubmit} className={"row justify-content-center m-2"}>
+                        <Form.Item name={"Update password"}
+                                   label={<label className={"text-white"}>Update password</label>}
+                                   rules={[{required: true, message: 'Please input a password'}]}
+                                   className={"col-3 mr-2"}>
+                            <Input.Password onChange={(e: any) => setPassword(e.target.value)} placeholder={"Enter a new password"}/>
+                        </Form.Item>
+                        <button type={"submit"} className={"btn btn-primary col-2 h-10"}>Submit changes</button>
+                    </Form>
 
-                        <button onClick={handleUsernameSubmit} className={"btn btn-primary col-2 mr-2"}>Save changes</button>
-
-                        {usernameSuccess && <Alert className={"col-2"} message="Username successfully changed" type="success" />}
-                        {usernameError && <Alert className={"col-2"} message="Error changing username" type="error" />}
-                    </div>
-
-                    <div className={"row justify-content-center m-2"}>
-                        <Input.Password className={"col-2 mr-2"} placeholder="Enter new password"
-                                        onChange={(e: any) => setPassword(e.target.value)}/>
-
-                        <button onClick={handlePasswordSubmit} className={"btn btn-primary col-2 mr-2"}>Save changes</button>
-
-                        {passwordSuccess && <Alert className={"col-2"} message="Password successfully changed" type="success" />}
-                        {passwordError && <Alert className={"col-2"} message="Error changing password" type="error" />}
-                    </div>
-
-                    <div className={"row justify-content-center m-2"}>
-                        <Input className={"col-2 mr-2"} placeholder="Enter new email"
-                               onChange={(e: any) => setEmail(e.target.value)}/>
-
-                        <button onClick={handleEmailSubmit} className={"btn btn-primary col-2 mr-2"}>Save changes</button>
-
-                        {emailSuccess && <Alert className={"col-2"} message="Email successfully changed" type="success" />}
-                        {emailError && <Alert className={"col-2"} message="Email already registered" type="error" />}
-                    </div>
+                    <Form onFinish={handleEmailSubmit} className={"row justify-content-center m-2"}>
+                        <Form.Item name={"Update email"}
+                                   label={<label className={"text-white"}>Update email&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>}
+                                   rules={[{required: true, type: 'email', message: 'Please input a email'}]}
+                                   className={"col-3 mr-2"}>
+                            <Input onChange={(e: any) => setEmail(e.target.value)} placeholder={"Enter new email"}/>
+                        </Form.Item>
+                        <button type={"submit"} className={"btn btn-primary col-2 h-10"}>Submit changes</button>
+                    </Form>
 
                     <div className={"justify-content-center m-2"}>
                         <button

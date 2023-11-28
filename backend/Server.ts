@@ -64,6 +64,7 @@ export class Server {
         this.updateUsername();
         this.updatePassword();
         this.updateEmail();
+        this.deleteAccount();
 
         // this.app.get("*", (req: Request, res: Response): void => {
         //     res.sendFile(path.resolve("./") + "/build/frontend/index.html");
@@ -477,6 +478,20 @@ export class Server {
                 if (err) {
                     console.log(err);
                     res.status(400).send({error: "Email already registered"});
+                } else {
+                    res.json(result);
+                }
+            })
+        })
+    }
+
+    private deleteAccount(): void {
+        this.app.delete("/api/account/delete", (req: Request, res: Response): void => {
+            const id = req.body.userID;
+            this.db.query(`DELETE FROM Streaminguser WHERE userID = ${id}`, (err, result) => {
+                if (err) {
+                    console.log(err);
+                    res.status(400).send({error: "Error deleting account"});
                 } else {
                     res.json(result);
                 }
