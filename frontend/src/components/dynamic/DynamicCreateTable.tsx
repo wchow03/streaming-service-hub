@@ -2,10 +2,11 @@ type DynamicCreateTableProps = {
     route?: string,
     data: any,
     className?: string
-    handleClick?: any
+    handleClick?: any,
+    active?: number
 }
 
-export default function DynamicCreateTable({route, data, className, handleClick}: DynamicCreateTableProps) {
+export default function DynamicCreateTable({route, data, className, handleClick, active}: DynamicCreateTableProps) {
 
     let headers: string[] = data.map((item: any) => Object.keys(item)).flat();
     let noIDHeaders = headers.filter((item: string) => !item.toLowerCase().includes("id"));
@@ -21,8 +22,8 @@ export default function DynamicCreateTable({route, data, className, handleClick}
             {/*<h2 className={`text-xl font-bold text-white pb-10 uppercase`}> {route.replace(/([a-z])([A-Z])/g, '$1 $2')} </h2>*/}
 
             <table
-                className={`text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 w-full`}>
-                <thead className={`text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400`}>
+                className={`text-sm text-left rtl:text-right text-gray-400 w-full`}>
+                <thead className={`text-xs uppercase bg-gray-700 text-gray-400`}>
 
                 <tr>
                     {
@@ -36,8 +37,9 @@ export default function DynamicCreateTable({route, data, className, handleClick}
                 <tbody>
                 {data.map((item: any, index: number) => (
                     <tr key={index}
-                        onClick={() => handleClick(item)}
-                        className={`bg-slate-500 border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-slate-700 ${handleClick && "hover:cursor-pointer"}`}>
+                        onClick={() => handleClick(item, index)}
+                        className={`border-b bg-gray-800 border-gray-700 hover:bg-slate-700 ${handleClick && "hover:cursor-pointer"}
+                        ${active === index && "dark:bg-teal-200 text-black hover:text-white hover:bg-teal-700 "}`}>
                         {
                             uniqueHeaders.map((header: string, j: number) => {
                                 return <td className={`px-6 py-4`} key={j}>{item[header]}</td>

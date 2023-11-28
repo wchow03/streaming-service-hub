@@ -34,9 +34,11 @@ export class Server {
             let query: string = "SELECT * FROM " + table;
             let route: string = "/api/" + table.toLowerCase();
             let addRoute: string = "/api/" + table.toLowerCase() + "/add";
+            let deleteRoute: string = "/api/" + table.toLowerCase() + "/delete";
 
             this.dynamicRoute(route, query);
             this.dynamicAddRoute(addRoute, table);
+            this.dynamicDeleteRoute(deleteRoute, table);
 
         });
 
@@ -121,6 +123,7 @@ export class Server {
     private dynamicAddRoute(route: string, table: string): void {
         this.app.post(route, (req: Request, res: Response): void => {
             let query: string = this.createAddQuery(table, req.body);
+            console.log("QUERY: " + query);
             this.db.query(query, (err, result) => {
                 if (err) {
                     console.error("ERROR: " + err);
@@ -131,15 +134,60 @@ export class Server {
         });
     }
 
+    private dynamicDeleteRoute(route: string, table: string): void {
+        this.app.delete(route, (req: Request, res: Response): void => {
+            let query: string = this.createDeleteQuery(table, req.body);
+            console.log("QUERY: " + query);
+            this.db.query(query, (err, result) => {
+                if (err) {
+                    console.error("ERROR: " + err);
+                } else {
+                    res.json(result);
+                }
+            });
+        });
+    }
+
+    private createDeleteQuery(table: string, params: any): string {
+        let query: string = "DELETE FROM " + table + " WHERE ";
+
+        let i: number = 0;
+        for (let key in params) {
+            if (params.hasOwnProperty(key)) {
+                if (i === 0) {
+                    query += key + " = '" + params[key] + "'";
+                } else {
+                    query += " AND " + key + " = '" + params[key] + "'";
+                }
+                i++;
+            }
+        }
+        return query;
+    }
+
     private createAddQuery(table: string, params: any): string {
-        let query: string = "INSERT INTO " + table + " VALUES (";
+        let query: string = "INSERT INTO " + table + "(";
+
+        let j: number = 0;
+        for (let key in params) {
+            if (params.hasOwnProperty(key)) {
+                if (j === 0) {
+                    query += key;
+                } else {
+                    query += ", " + key;
+                }
+            }
+            j++;
+        }
+
+        query += ") VALUES ("
         let i: number = 0;
         for (let key in params) {
             if (params.hasOwnProperty(key)) {
                 if (i === 0) {
                     query += "'" + params[key] + "'";
                 } else {
-                    query += ", '" + params[key] + "'";
+                    query += ", " + params[key] + "";
                 }
                 i++;
             }

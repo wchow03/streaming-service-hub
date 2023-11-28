@@ -185,15 +185,16 @@ export default function Media() {
         <div className={`pb-10 sm:px-6 md:px-24 lg:px-48 flex flex-col gap-3`}>
             <h1 className={`h1 text-white text-center`}>Media</h1>
 
+            <div className={`sticky top-5 flex flex-col gap-2`}>
+                <SearchBar values={[search]} handlers={[handleMediaTypeChange, handleSearchChange, handleSubmit]}/>
 
-            <SearchBar values={[search]} handlers={[handleMediaTypeChange, handleSearchChange, handleSubmit]}/>
-
-            <Filters
-                setFilteredServices={setFilteredServices}
-                filteredServices={filteredServices}
-                setFilteredStudios={setFilteredStudios}
-                filteredStudios={filteredStudios}
-            />
+                <Filters
+                    setFilteredServices={setFilteredServices}
+                    filteredServices={filteredServices}
+                    setFilteredStudios={setFilteredStudios}
+                    filteredStudios={filteredStudios}
+                />
+            </div>
 
 
             <DynamicCreateTable key={seed} route={mediaType} data={data}/>

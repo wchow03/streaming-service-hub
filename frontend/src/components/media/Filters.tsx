@@ -136,7 +136,7 @@ export default function Filters(
             <div className={`relative flex flex-col gap-1 basis-1/2 md:w-1/2`}>
                 <button
                     type={`button`}
-                    className={`flex flex-row gap-2 items-center font-bolds text-black text-sm w-full py-2 px-3 text-left outline outline-2 outline-teal-600 rounded transition-colors duration-300 hover:outline-teal-300 ${visible === label && "outline-teal-600"}`}
+                    className={`flex flex-row gap-2 items-center font-bolds text-black text-sm w-full py-2 px-3 text-left outline outline-2 rounded transition-colors duration-300 hover:outline-teal-300 ${visible === label && "outline-teal-600"}`}
                     onClick={toggleVisible}>
                     {label}:
                     <div className={`overflow-x-scroll flex flex-row w-full gap-2 no-scrollbar`}>
@@ -153,7 +153,7 @@ export default function Filters(
 
                 </button>
                 <form
-                    className={`${visible === label ? "" : "opacity-0 -z-10"} text-black top-10 absolute w-full transition-opacity duration-300 flex flex-col border border-gray-900 rounded-b-sm bg-white overflow-y-scroll `}>
+                    className={`${visible === label ? "" : "hidden"} text-black top-10 absolute w-full transition-opacity duration-300 flex flex-col border border-gray-900 rounded-b-sm bg-white overflow-y-scroll `}>
                     {
                         complete.map((item: any, index: number) => {
                             return (
