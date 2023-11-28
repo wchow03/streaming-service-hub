@@ -5,20 +5,18 @@ import 'tailwindcss/tailwind.css';
 // import DynamicGetAll from "./functions/DynamicGetAll.tsx";
 //
 // import {useState} from 'react';
-// import AddForm from "./components/AddForm.tsx";
+// import DynamicAddForm from "./components/DynamicAddForm.tsx";
 import Login from "./components/Login.tsx";
 import "bootstrap/dist/css/bootstrap.min.css";
 import {Route, Routes} from "react-router-dom";
 import Register from "./components/Register.tsx";
 import HomePage from "./components/HomePage.tsx";
 import ProtectedRoutes from "./functions/ProtectedRoutes.tsx";
-import WatchList from "./components/WatchList.tsx";
+import WatchList from "./components/watch-list/WatchList.tsx";
 import WatchHistory from "./components/WatchHistory.tsx";
-import Netflix from "./components/StreamingServices/Netflix.tsx";
-import DisneyPlus from "./components/StreamingServices/DisneyPlus.tsx";
-import PrimeVideo from "./components/StreamingServices/PrimeVideo.tsx";
-import Max from "./components/StreamingServices/Max.tsx";
-import CraveTV from "./components/StreamingServices/CraveTV.tsx";
+import {useEffect, useState} from "react";
+import DynamicStreamingService from "./components/dynamic/DynamicStreamingService.tsx";
+import ViewWatchList from "./components/watch-list/ViewWatchList.tsx";
 
 
 function App() {
@@ -32,7 +30,7 @@ function App() {
     //         <h1 className={`text-3xl font-bold text-white pb-10 uppercase`}> Database </h1>
     //         <SelectTable setRoute={setRoute} />
     //         <DynamicCreateTable route={route} data={data}/>
-    //         <AddForm route={route} data={data}/>
+    //         <DynamicAddForm route={route} data={data}/>
     //     </div>
     // )
     // return (
@@ -40,6 +38,26 @@ function App() {
     //       <Login />
     //   </div>
     // );
+
+    const [streamingServices, setStreamingServices] = useState([] as string[]);
+
+    useEffect(() => {
+        fetchStreamingServices();
+    }, []);
+
+    function addStreamingService(streamingService: string) {
+        setStreamingServices([...streamingServices, streamingService]);
+    }
+
+    function fetchStreamingServices() {
+        fetch("http://localhost:8080/api/streamingService")
+            .then(response => response.json())
+            .then(data => {
+                data.forEach((streamingService: any) => {
+                    addStreamingService(streamingService.name);
+                });
+            });
+    }
 
     return (
         <Routes>
@@ -51,13 +69,19 @@ function App() {
             <Route element={<ProtectedRoutes/>}>
 
                 <Route path={'/home'} element={<HomePage/>}></Route>
-                <Route path={'/watchList'} element={<WatchList/>}></Route>
-                <Route path={'/watchHistory'} element={<WatchHistory/>}></Route>
-                <Route path={'/Netflix'} element={<Netflix/>}></Route>
-                <Route path={'/Disney Plus'} element={<DisneyPlus/>}></Route>
-                <Route path={'/Max'} element={<Max/>}></Route>
-                <Route path={'/Prime Video'} element={<PrimeVideo/>}></Route>
-                <Route path={'/Crave TV'} element={<CraveTV/>}></Route>
+                <Route path={'/watchlist'} element={<WatchList/>}></Route>
+                <Route path={'/watchhistory'} element={<WatchHistory/>}></Route>
+
+                <Route path={`/service/:serviceName`} element={<DynamicStreamingService/>}></Route>
+
+                <Route path={'/watchlist/:watchlistName/:watchlistID'} element={<ViewWatchList/>}></Route>
+
+
+                {/*<Route path={'/Netflix'} element={<DynamicStreamingService serviceName={`Netflix`}/>}></Route>*/}
+                {/*<Route path={'/Disney Plus'} element={<DynamicStreamingService serviceName={`Disney Plus`}/>}></Route>*/}
+                {/*<Route path={'/Max'} element={<Max/>}></Route>*/}
+                {/*<Route path={'/Prime Video'} element={<PrimeVideo/>}></Route>*/}
+                {/*<Route path={'/Crave TV'} element={<CraveTV/>}></Route>*/}
             </Route>
         </Routes>
     );

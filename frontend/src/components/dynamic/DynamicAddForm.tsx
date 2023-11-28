@@ -1,6 +1,6 @@
 import {useState} from "react";
 
-export default function AddForm({route, data}: { route: string, data: any }) {
+export default function DynamicAddForm({route, data}: { route: string, data: any }) {
 
     const [formData, setFormData] = useState({});
 
@@ -22,7 +22,7 @@ export default function AddForm({route, data}: { route: string, data: any }) {
             };
 
         console.log(body);
-        
+
         e.preventDefault();
 
         fetch(url, options)
