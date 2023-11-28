@@ -60,12 +60,13 @@ export class Server {
         this.getMovies();
 
         this.updateUsername();
-        this.updatePassword();
+        // this.updatePassword();
         this.updateEmail();
         this.deleteAccount();
 
         this.authenticateRegister();
         this.authenticateLogin();
+        this.authenticateUpdatePassword();
 
         // this.app.get("*", (req: Request, res: Response): void => {
         //     res.sendFile(path.resolve("./") + "/build/frontend/index.html");
@@ -462,22 +463,22 @@ export class Server {
         });
     }
 
-    private updatePassword(): void {
-        this.app.post("/api/account/updatePassword", (req: Request, res: Response): void => {
-            const id = req.body.userID;
-            const newPassword = req.body.password;
-            this.db.query(`UPDATE Streaminguser
-                           SET password = '${newPassword}'
-                           WHERE userID = ${id}`, (err, result) => {
-                if (err) {
-                    console.log(err);
-                    res.status(400).send({error: "Error updating password"});
-                } else {
-                    res.json(result);
-                }
-            })
-        })
-    }
+    // private updatePassword(): void {
+    //     this.app.post("/api/account/updatePassword", (req: Request, res: Response): void => {
+    //         const id = req.body.userID;
+    //         const newPassword = req.body.password;
+    //         this.db.query(`UPDATE Streaminguser
+    //                        SET password = '${newPassword}'
+    //                        WHERE userID = ${id}`, (err, result) => {
+    //             if (err) {
+    //                 console.log(err);
+    //                 res.status(400).send({error: "Error updating password"});
+    //             } else {
+    //                 res.json(result);
+    //             }
+    //         })
+    //     })
+    // }
 
     private updateEmail(): void {
         this.app.post("/api/account/updateEmail", (req: Request, res: Response): void => {
@@ -516,7 +517,7 @@ export class Server {
         this.app.post("/api/authenticate/register", (req: Request, res: Response): void => {
             const crypto = require('crypto');
 
-            console.log(req.body);
+            // console.log(req.body);
 
             const username = req.body.user;
             const password = req.body.password;
@@ -576,8 +577,8 @@ export class Server {
                     const salt = result[0].passwordSalt;
                     const hashedPassword = crypto.createHash('sha512').update(password + salt).digest('hex');
 
-                    console.log(hashedPassword);
-                    console.log(result[0].passwordHash);
+                    // console.log(hashedPassword);
+                    // console.log(result[0].passwordHash);
 
                     if (hashedPassword === result[0].passwordHash) {
                         res.json({userID: result[0].userID, email: result[0].email, userName: result[0].userName});
@@ -586,6 +587,77 @@ export class Server {
                     }
                 }
             });
+        });
+    }
+
+    private authenticateUpdatePassword(): void {
+        this.app.post("/api/authenticate/updatepassword", (req: Request, res: Response): void => {
+            const crypto = require('crypto');
+            const userID: string = req.body.userID;
+            const password: string = req.body.password;
+            const oldPassword: string = req.body.oldPassword;
+
+            // console.log("UserID: " + userID);
+            // console.log("Password: " + password);
+            // console.log("Old Password: " + oldPassword);
+
+            if (!userID || !password || !oldPassword) {
+                res.status(400).send({error: "Missing required field"});
+                return;
+            }
+
+            const validateOldPasswordQuery: string = `
+                SELECT passwordSalt, passwordHash
+                FROM StreamingUser
+                WHERE userID = ${userID};
+            `;
+
+            this.db.query(validateOldPasswordQuery, (err, result) => {
+                if (err) {
+                    console.error(err);
+                    res.status(400).send({error: "Error Changing Password"});
+                } else {
+                    if (result.length === 0) {
+                        res.status(400).send({error: "User not found"});
+                        return;
+                    }
+
+                    const salt = result[0].passwordSalt;
+                    const hashedPassword = crypto.createHash('sha512').update(oldPassword + salt).digest('hex');
+
+                    console.log(hashedPassword);
+                    console.log(result[0].passwordHash);
+
+                    if (hashedPassword !== result[0].passwordHash) {
+                        res.status(400).send({error: "Incorrect password"});
+                        return;
+                    }
+                }
+            });
+
+            const salt = crypto.randomBytes(16).toString('hex');
+            const hashedPassword = crypto.createHash('sha512').update(password + salt).digest('hex');
+
+            const query: string = `
+                UPDATE StreamingUser
+                SET passwordHash = ?,
+                    passwordSalt = ?
+                WHERE userID = ${userID};
+            `;
+
+            // console.log(query);
+
+            this.db.query(query, [hashedPassword, salt], (err, result) => {
+                if (err) {
+                    console.error(err);
+                    res.status(400).send({error: "Error Changing Password"});
+                } else {
+                    // console.log(result);
+                    res.status(200).send({message: result});
+                }
+            });
+
+
         });
     }
 

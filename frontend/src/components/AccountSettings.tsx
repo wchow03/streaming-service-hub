@@ -8,6 +8,8 @@ export default function AccountSettings() {
     const [newPassword, setPassword] = useState();
     const [newEmail, setEmail] = useState();
 
+    const [oldPassword, setOldPassword] = useState("");
+
     const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(false);
 
@@ -74,8 +76,8 @@ export default function AccountSettings() {
     };
 
     const handlePasswordSubmit = () => {
-        const data = {userID: userID, password: newPassword};
-        fetch("http://localhost:8080/api/account/updatePassword", {
+        const data = {userID: userID, password: newPassword, oldPassword: oldPassword};
+        fetch("http://localhost:8080/api/authenticate/updatePassword", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -85,10 +87,13 @@ export default function AccountSettings() {
             .then((res) => {
                 if (res.status === 400) {
                     setPasswordError(true);
-                } else {
+                } else if (res.status === 200) {
+                    console.log("Password successfully changed");
                     setPasswordSuccess(true);
+                } else {
+                    setPasswordError(true);
                 }
-                setTimeout(() => window.location.reload(), 1500);
+                setTimeout(() => window.location.reload(), 500);
             })
             .catch(() => setPasswordError(true));
     };
@@ -116,73 +121,102 @@ export default function AccountSettings() {
     return (
         <>
             <div className={"container justify-content-center align-items-center text-center"}>
-                {usernameSuccess && <Alert message="Username successfully changed" type="success" />}
-                {usernameError && <Alert message="Error changing username" type="error" />}
-                {passwordSuccess && <Alert message="Password successfully changed" type="success" />}
-                {passwordError && <Alert message="Error changing password" type="error" />}
-                {emailSuccess && <Alert message="Email successfully changed" type="success" />}
-                {emailError && <Alert message="Email already registered" type="error" />}
-                {deleteAccountSuccess && <Alert message="Account successfully deleted, sad to see you go :(" type="success" />}
-                {deleteAccountError && <Alert message="Error deleting account" type="error" />}
+                {usernameSuccess && <Alert message="Username successfully changed" type="success"/>}
+                {usernameError && <Alert message="Error changing username" type="error"/>}
+                {passwordSuccess && <Alert message="Password successfully changed" type="success"/>}
+                {passwordError && <Alert message="Error changing password" type="error"/>}
+                {emailSuccess && <Alert message="Email successfully changed" type="success"/>}
+                {emailError && <Alert message="Email already registered" type="error"/>}
+                {deleteAccountSuccess &&
+                    <Alert message="Account successfully deleted, sad to see you go :(" type="success"/>}
+                {deleteAccountError && <Alert message="Error deleting account" type="error"/>}
             </div>
-            <h1 className={"h1 text-white text-center"}>Account Settings</h1>
-            <div className="container text-center text-white">
-                <div className="flex flex-col gap-2">
-                    <Form onFinish={handleUsernameSubmit} className={"row justify-content-center m-2"}>
+            <h1 className={"h1 text-white text-center pb-10"}>Account Settings</h1>
+            <div className="container text-center text-white flex flex-col justify-between gap-10">
+                <div className="flex flex-col gap-5 justify-content-center h-full">
+                    <Form onFinish={handleUsernameSubmit} className={"flex flex-col md:flex-row justify-between gap-3"}>
                         <Form.Item name={"Update username"}
                                    label={<label className={"text-white"}>Update username</label>}
                                    rules={[{required: true, message: 'Please input a username'}]}
-                                   className={"col-3 mr-2"}>
-                            <Input onChange={(e: any) => setUsername(e.target.value)} placeholder={"Enter a new username"}/>
+                                   className={"col-3 md:mr-2 flex-grow max-md:w-full"}>
+                            <Input onChange={(e: any) => setUsername(e.target.value)}
+                                   placeholder={"Enter a new username"}/>
                         </Form.Item>
-                        <button type={"submit"} className={"btn btn-primary col-2 h-10"}>Submit changes</button>
+                        <button type={"submit"}
+                                className={"whitespace-nowrap basis-1/4 btn btn-primary col-2 h-10 max-md:w-full"}>Submit
+                            changes
+                        </button>
                     </Form>
 
-                    <Form onFinish={handlePasswordSubmit} className={"row justify-content-center m-2"}>
-                        <Form.Item name={"Update password"}
-                                   label={<label className={"text-white"}>Update password</label>}
-                                   rules={[{required: true, message: 'Please input a password'}]}
-                                   className={"col-3 mr-2"}>
-                            <Input.Password onChange={(e: any) => setPassword(e.target.value)} placeholder={"Enter a new password"}/>
-                        </Form.Item>
-                        <button type={"submit"} className={"btn btn-primary col-2 h-10"}>Submit changes</button>
+                    <Form onFinish={handlePasswordSubmit}
+                          className={"flex flex-col md:flex-row justify-between gap-3 "}>
+
+                        <div className={`flex flex-row w-full`}>
+                            <Form.Item name={"Old password"}
+                                       label={<label className={"text-white"}>Old
+                                           password&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>}
+                                       rules={[{required: true, message: 'Please input a password'}]}
+                                       className={"col-3 mr-2 flex-grow max-md:flex-grow"}>
+                                <Input.Password onChange={(e: any) => setOldPassword(e.target.value)}
+                                                placeholder={"Enter old password"}/>
+                            </Form.Item>
+
+                            <Form.Item name={"Update password"}
+                                       label={<label className={"text-white"}>Update password</label>}
+                                       rules={[{required: true, message: 'Please input a password'}]}
+                                       className={"col-3 md:mr-2 flex-grow max-md:flex-grow"}>
+
+                                <Input.Password onChange={(e: any) => setPassword(e.target.value)}
+                                                placeholder={"Enter a new password"}/>
+                            </Form.Item>
+                        </div>
+
+                        <button type={"submit"}
+                                className={"whitespace-nowrap basis-1/4 btn btn-primary col-2 h-10 max-md:w-full"}>Submit
+                            changes
+                        </button>
                     </Form>
 
-                    <Form onFinish={handleEmailSubmit} className={"row justify-content-center m-2"}>
+                    <Form onFinish={handleEmailSubmit}
+                          className={"flex flex-col md:flex-row justify-between gap-3"}>
                         <Form.Item name={"Update email"}
-                                   label={<label className={"text-white"}>Update email&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>}
+                                   label={<label className={"text-white"}>Update
+                                       email&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>}
                                    rules={[{required: true, type: 'email', message: 'Please input a email'}]}
-                                   className={"col-3 mr-2"}>
+                                   className={"col-3 md:mr-2 flex-grow max-md:w-full"}>
                             <Input onChange={(e: any) => setEmail(e.target.value)} placeholder={"Enter new email"}/>
                         </Form.Item>
-                        <button type={"submit"} className={"btn btn-primary col-2 h-10"}>Submit changes</button>
-                    </Form>
-
-                    <div className={"justify-content-center m-2"}>
-                        <button
-                            className={"col-3 py-2 rounded text-white bg-red-600 hover:bg-red-900 transition-colors duration-300"}
-                            onClick={showModal}>Delete Account
+                        <button type={"submit"}
+                                className={"whitespace-nowrap basis-1/4 btn btn-primary col-2 h-10 max-md:w-full"}>Submit
+                            changes
                         </button>
-                        <Modal
-                            open={open}
-                            title="Delete Account"
-                            onOk={handleOk}
-                            onCancel={handleCancel}
-                            footer={[
-                                <Button key="back" onClick={handleCancel}>
-                                    No
-                                </Button>,
-                                <Button key="submit" type="primary" loading={loading}
-                                        onClick={() => handleOk()}
-                                        style={{background: "red"}}>
-                                    Yes
-                                </Button>
-                            ]}
-                        >
-                            <span className={"h6"}>Are you sure you want to delete your account?</span>
-                        </Modal>
-                    </div>
+                    </Form>
                 </div>
+                <div className={"justify-content-center w-full pb-10"}>
+                    <button
+                        className={"col-3 py-2 w-full rounded text-white bg-red-600 hover:bg-red-900 transition-colors duration-300"}
+                        onClick={showModal}>Delete Account
+                    </button>
+                    <Modal
+                        open={open}
+                        title="Delete Account"
+                        onOk={handleOk}
+                        onCancel={handleCancel}
+                        footer={[
+                            <Button key="back" onClick={handleCancel}>
+                                No
+                            </Button>,
+                            <Button key="submit" type="primary" loading={loading}
+                                    onClick={() => handleOk()}
+                                    style={{background: "red"}}>
+                                Yes
+                            </Button>
+                        ]}
+                    >
+                        <span className={"h6"}>Are you sure you want to delete your account?</span>
+                    </Modal>
+                </div>
+
             </div>
         </>
     );
