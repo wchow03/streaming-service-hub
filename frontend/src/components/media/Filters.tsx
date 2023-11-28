@@ -230,7 +230,7 @@ export default function Filters(
 
                 </button>
                 <form
-                    className={`${visible === label ? "" : "hidden"} max-h-[33vh] text-black top-10 absolute w-full transition-opacity duration-300 flex flex-col border border-gray-900 rounded-b-sm bg-white overflow-y-scroll divide-y-2 `}>
+                    className={`${visible === label ? "z-10" : "hidden"} max-h-[33vh] text-black top-10 absolute w-full transition-opacity duration-300 flex flex-col border border-gray-900 rounded-b-sm bg-white overflow-y-scroll divide-y-2 `}>
                     {
                         complete.map((item: any, index: number) => {
                             return (
