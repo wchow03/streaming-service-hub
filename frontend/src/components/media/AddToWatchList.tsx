@@ -8,6 +8,8 @@ export default function AddToWatchList({mediaID}: AddToWatchListProps) {
 
     const userID = window.localStorage.getItem("UserID")!;
 
+    console.log("UserID: " + userID);
+
 
     // Handle Selecting Watchlist
     // ******************************************************
@@ -35,7 +37,7 @@ export default function AddToWatchList({mediaID}: AddToWatchListProps) {
     function getWatchList() {
         const body =
             {
-                WHERE: `userID = "${userID}"`,
+                WHERE: `userID = ${userID}`,
                 SELECT: "listName, listID"
             };
 
