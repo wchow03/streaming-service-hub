@@ -11,7 +11,6 @@ export default function Media() {
     const userID = window.localStorage.getItem("UserID")!;
 
     const [data, setData] = useState([] as string[]);
-    const [search, setSearch] = useState("");
     const [submit, setSubmit] = useState(false);
     const [mediaType, setMediaType] = useState("movie");
     const [seed, setSeed] = useState(0);
@@ -25,20 +24,26 @@ export default function Media() {
 
     // Filtered Columns
     // ******************************************************
-    const [headers, setHeaders] = useState([] as string[]);
-    const [subscribed, setSubscribed] = useState([] as string[]);
+    // const [headers, setHeaders] = useState([] as string[]);
+    const [search, setSearch] = useState("");
+    const [filteredServices, setFilteredServices] = useState([] as string[]);
     const [filteredStudios, setFilteredStudios] = useState([] as string[]);
 
+
+    // Update Filters on change
+    // ******************************************************
     useEffect(() => {
-        createServiceFilter(subscribed);
+        createServiceFilter(filteredServices);
         createStudioFilter(filteredStudios);
-    }, [subscribed, filteredStudios, searchFilter]);
+        createSearchFilter(search);
+    }, [filteredServices, filteredStudios, search]);
 
     useEffect(() => {
         combineFilters();
     }, [serviceFilter, studioFilter, searchFilter]);
 
     useEffect(() => {
+        console.log("Filter: " + filter);
         getMedia(setData, filter);
     }, [filter]);
 
@@ -50,11 +55,12 @@ export default function Media() {
         filters.map((filter: string, index: number) => {
             const logic = index + 1 < filters.length ? " AND " : "";
             if (filter !== "") {
-                combinedFilter = combinedFilter + filter + " AND ";
+                combinedFilter = combinedFilter + "(" + filter + ")" + logic;
             }
         });
 
         setFilter(combinedFilter)
+        console.log(combinedFilter);
     }
 
     // Seed for DynamicCreateTable
@@ -63,14 +69,8 @@ export default function Media() {
         setSeed(seed + 1);
     }, [data]);
 
-    // Initial fetch
-    // ******************************************************
-    useEffect(() => {
-        getMedia(setData, serviceFilter);
-        getHeaders();
-    }, [serviceFilter]);
 
-    // Create service filter
+    // Create SQL WHERE filters
     // ******************************************************
     useEffect(() => {
         fetch(`http://localhost:8080/api/home/subscribedServices/${userID}`)
@@ -78,11 +78,14 @@ export default function Media() {
             .then(result => {
                 const subscribedServices = result.map((service: any) => service.serviceName);
                 console.log("Services: " + subscribedServices);
-                setSubscribed(subscribedServices);
+                setFilteredServices(subscribedServices);
                 return subscribedServices;
             })
             .then((result) => {
                 createServiceFilter(result);
+            })
+            .then(() => {
+                getMedia(setData, filter);
             });
 
     }, []);
@@ -114,21 +117,13 @@ export default function Media() {
     }
 
     function createSearchFilter(search: string) {
-        if (search !== "") {
-            setSearchFilter(`mediaName LIKE "%${search}%"`);
-        } else {
-            setSearchFilter("");
-        }
+        setSearchFilter(`mediaName LIKE "%${search}%"`);
     }
 
     // Fetch on filter change
     // ******************************************************
     useEffect(() => {
-        if (search !== "") {
-            setFilter(`mediaName LIKE "%${search}%" AND (` + serviceFilter + `)`);
-        } else {
-            setFilter(serviceFilter);
-        }
+        combineFilters();
 
         if (submit) {
             getMedia(setData, filter);
@@ -178,13 +173,13 @@ export default function Media() {
         console.log(result);
     }
 
-    function getHeaders(): string[] {
-        let headers: string[] = data.map((item: any) => Object.keys(item)).flat();
-        let noIDHeaders = headers.filter((item: string) => !item.toLowerCase().includes("id"));
-        let uniqueHeaders: string[] = [...new Set(noIDHeaders)];
-        setHeaders(uniqueHeaders);
-        return uniqueHeaders;
-    }
+    // function getHeaders(): string[] {
+    //     let headers: string[] = data.map((item: any) => Object.keys(item)).flat();
+    //     let noIDHeaders = headers.filter((item: string) => !item.toLowerCase().includes("id"));
+    //     let uniqueHeaders: string[] = [...new Set(noIDHeaders)];
+    //     setHeaders(uniqueHeaders);
+    //     return uniqueHeaders;
+    // }
 
     return (
         <div className={`pb-10 sm:px-6 md:px-24 lg:px-48 flex flex-col gap-3`}>
@@ -194,12 +189,12 @@ export default function Media() {
             <SearchBar values={[search]} handlers={[handleMediaTypeChange, handleSearchChange, handleSubmit]}/>
 
             <Filters
-                headers={headers}
-                setFilteredServices={setSubscribed}
-                filteredServices={subscribed}
+                setFilteredServices={setFilteredServices}
+                filteredServices={filteredServices}
                 setFilteredStudios={setFilteredStudios}
                 filteredStudios={filteredStudios}
             />
+
 
             <DynamicCreateTable key={seed} route={mediaType} data={data}/>
 
