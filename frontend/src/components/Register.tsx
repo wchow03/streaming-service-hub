@@ -18,7 +18,7 @@ export default function Register() {
             .catch(() => alert("Error getting users"));
     }, []);
 
-    const handleSubmit = (e: any) => {
+    const handleSubmit = async (e: any) => {
         e.preventDefault();
         console.log(emails);
         console.log(email);
@@ -29,7 +29,7 @@ export default function Register() {
                 email: email,
                 birthday: birthday
             }
-            fetch("http://localhost:8080/api/register", {
+            await fetch("http://localhost:8080/api/register", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"

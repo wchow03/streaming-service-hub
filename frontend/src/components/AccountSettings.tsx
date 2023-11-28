@@ -10,10 +10,9 @@ export default function AccountSettings() {
     const [open, setOpen] = useState(false);
 
     const userID = window.localStorage.getItem("UserID");
-    const email = window.localStorage.getItem("Email");
 
     const [usernameSuccess, setUsernameSuccess] = useState(false);
-    const [passwrodSuccess, setPasswordSuccess] = useState(false);
+    const [passwordSuccess, setPasswordSuccess] = useState(false);
     const [emailSuccess, setEmailSuccess] = useState(false);
     const [usernameError, setUsernameError] = useState(false);
     const [passwordError, setPasswordError] = useState(false);
@@ -103,22 +102,31 @@ export default function AccountSettings() {
                 <div className="flex flex-col gap-2">
 
                     <div className={"row justify-content-center m-2"}>
-                        <Input required className={"col-2 mr-2"} placeholder="Enter new username" onChange={(e) => setUsername(e.target.value)}/>
+                        <Input required className={"col-2 mr-2"} placeholder="Enter new username"
+                               onChange={(e: any) => setUsername(e.target.value)}/>
+
                         <button onClick={handleUsernameSubmit} className={"btn btn-primary col-2 mr-2"}>Save changes</button>
+
                         {usernameSuccess && <Alert className={"col-2"} message="Username successfully changed" type="success" />}
                         {usernameError && <Alert className={"col-2"} message="Error changing username" type="error" />}
                     </div>
 
                     <div className={"row justify-content-center m-2"}>
-                        <Input.Password className={"col-2 mr-2"} placeholder="Enter new password" onChange={(e) => setPassword(e.target.value)}/>
+                        <Input.Password className={"col-2 mr-2"} placeholder="Enter new password"
+                                        onChange={(e: any) => setPassword(e.target.value)}/>
+
                         <button onClick={handlePasswordSubmit} className={"btn btn-primary col-2 mr-2"}>Save changes</button>
-                        {passwrodSuccess && <Alert className={"col-2"} message="Password successfully changed" type="success" />}
+
+                        {passwordSuccess && <Alert className={"col-2"} message="Password successfully changed" type="success" />}
                         {passwordError && <Alert className={"col-2"} message="Error changing password" type="error" />}
                     </div>
 
                     <div className={"row justify-content-center m-2"}>
-                        <Input className={"col-2 mr-2"} placeholder="Enter new email" onChange={(e) => setEmail(e.target.value)}/>
+                        <Input className={"col-2 mr-2"} placeholder="Enter new email"
+                               onChange={(e: any) => setEmail(e.target.value)}/>
+
                         <button onClick={handleEmailSubmit} className={"btn btn-primary col-2 mr-2"}>Save changes</button>
+
                         {emailSuccess && <Alert className={"col-2"} message="Email successfully changed" type="success" />}
                         {emailError && <Alert className={"col-2"} message="Email already registered" type="error" />}
                     </div>
