@@ -39,6 +39,7 @@ export default function Media() {
     const [searchFilter, setSearchFilter] = useState("");
     const [serviceFilter, setServiceFilter] = useState("");
     const [studioFilter, setStudioFilter] = useState("");
+    const [genreFilter, setGenreFilter] = useState("");
 
     // Filtered Columns
     // ******************************************************
@@ -46,6 +47,7 @@ export default function Media() {
     const [search, setSearch] = useState("");
     const [filteredServices, setFilteredServices] = useState([] as string[]);
     const [filteredStudios, setFilteredStudios] = useState([] as string[]);
+    const [filteredGenres, setFilteredGenres] = useState([] as string[]);
 
 
     // Update Filters on change
@@ -53,12 +55,13 @@ export default function Media() {
     useEffect(() => {
         createServiceFilter(filteredServices);
         createStudioFilter(filteredStudios);
+        createGenreFilter(filteredGenres);
         createSearchFilter(search);
-    }, [filteredServices, filteredStudios, search]);
+    }, [filteredServices, filteredStudios, filteredGenres, search]);
 
     useEffect(() => {
         combineFilters();
-    }, [serviceFilter, studioFilter, searchFilter]);
+    }, [serviceFilter, studioFilter, searchFilter, genreFilter]);
 
     useEffect(() => {
         console.log("Filter: " + filter);
@@ -68,7 +71,7 @@ export default function Media() {
     function combineFilters() {
         let combinedFilter: string = "";
 
-        const filters = [serviceFilter, studioFilter, searchFilter];
+        const filters = [serviceFilter, studioFilter, genreFilter, searchFilter];
 
         filters.map((filter: string, index: number) => {
             const logic = index + 1 < filters.length ? " AND " : "";
@@ -118,7 +121,7 @@ export default function Media() {
             tempFilter = tempFilter + newFilter + logic;
         });
         setServiceFilter(tempFilter);
-        console.log(tempFilter);
+        // console.log(tempFilter);
     }
 
     function createStudioFilter(studios: string[]) {
@@ -131,7 +134,20 @@ export default function Media() {
             tempFilter = tempFilter + newFilter + logic;
         });
         setStudioFilter(tempFilter);
-        console.log(tempFilter);
+        // console.log(tempFilter);
+    }
+
+    function createGenreFilter(genres: string[]) {
+        // console.log(services)
+        let tempFilter = "";
+        genres.map((genre: any, index: number) => {
+            // console.log(service);
+            const logic = index + 1 < genres.length ? " OR " : "";
+            const newFilter = `genreName = "${genre}"`;
+            tempFilter = tempFilter + newFilter + logic;
+        });
+        setGenreFilter(tempFilter);
+        console.log("Genre Filter: " + tempFilter);
     }
 
     function createSearchFilter(search: string) {
@@ -214,6 +230,8 @@ export default function Media() {
                         filteredServices={filteredServices}
                         setFilteredStudios={setFilteredStudios}
                         filteredStudios={filteredStudios}
+                        setFilteredGenres={setFilteredGenres}
+                        filteredGenres={filteredGenres}
                     />
 
                     <AddToWatchList mediaID={mediaID}/>

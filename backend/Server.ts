@@ -392,14 +392,29 @@ export class Server {
         this.app.post("/api/media/shows/", (req: Request, res: Response): void => {
             const WHERE: string = req.body.WHERE as string;
 
-            let query: string = `SELECT *
+            let query: string = `SELECT m.mediaID,
+                                        m.mediaName,
+                                        m.rating,
+                                        m.studioName,
+                                        m.serviceName,
+                                        s.numberOfSeasons,
+                                        GROUP_CONCAT(g.genreName) AS genreList
                                  FROM Media m
                                           JOIN TVShow s
-                                               ON m.mediaID = s.mediaID`;
+                                               ON m.mediaID = s.mediaID
+                                          JOIN Genre g
+                                               ON m.mediaID = g.mediaID`;
 
             if (WHERE) {
                 query += " WHERE " + WHERE;
             }
+
+            query += ` GROUP BY m.mediaID,
+                                  m.mediaName,
+                                  m.rating,
+                                  m.studioName,
+                                  m.serviceName,
+                                  s.numberOfSeasons`;
 
             this.db.query(query,
                 (err, result) => {
@@ -416,14 +431,31 @@ export class Server {
         this.app.post("/api/media/movies/", (req: Request, res: Response): void => {
             const WHERE: string = req.body.WHERE as string;
 
-            let query: string = `SELECT *
+            let query: string = `SELECT m.mediaID,
+                                        m.mediaName,
+                                        m.rating,
+                                        m.studioName,
+                                        m.serviceName,
+                                        f.version,
+                                        f.length,
+                                        GROUP_CONCAT(g.genreName) AS genreList
                                  FROM Media m
                                           JOIN Movie f
-                                               ON m.mediaID = f.mediaID`;
+                                               ON m.mediaID = f.mediaID
+                                          JOIN Genre g
+                                               ON m.mediaID = g.mediaID`;
 
             if (WHERE) {
                 query += " WHERE " + WHERE;
             }
+
+            query += ` GROUP BY m.mediaID,
+                                  m.mediaName,
+                                  m.rating,
+                                  m.studioName,
+                                  m.serviceName,
+                                  f.version,
+                                  f.length`;
 
             this.db.query(query,
                 (err, result) => {
