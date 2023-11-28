@@ -369,6 +369,7 @@ export class Server {
     private getWatchlistRoute(): void {
         this.app.get("/api/watchlist/:listID/", (req: Request, res: Response): void => {
             this.db.query(`SELECT l.listID,
+                                  m.mediaID,
                                   m.mediaName,
                                   m.rating,
                                   m.studioName,
