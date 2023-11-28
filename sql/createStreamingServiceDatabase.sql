@@ -81,7 +81,7 @@ CREATE TABLE SubscribesTo
     PRIMARY KEY (userID, serviceName),
     CONSTRAINT subscribesto_ibfk_1
         FOREIGN KEY (userID) REFERENCES StreamingUser (userID)
-        ON DELETE CASCADE,
+            ON DELETE CASCADE,
     CONSTRAINT subscribesto_ibfk_2
         FOREIGN KEY (serviceName, tier) REFERENCES Subscription (serviceName, tier)
 );
@@ -126,12 +126,13 @@ CREATE INDEX mediaID
 
 CREATE TABLE WatchList
 (
-    listID   INT          NOT NULL
+    listID   INT AUTO_INCREMENT
         PRIMARY KEY,
     listName VARCHAR(255) NULL,
     userID   INT          NOT NULL,
     CONSTRAINT watchlist_ibfk_1
         FOREIGN KEY (userID) REFERENCES StreamingUser (userID)
+            ON DELETE CASCADE
 );
 
 CREATE INDEX userID
@@ -143,7 +144,10 @@ CREATE TABLE AddToList
     mediaID INT NOT NULL,
     PRIMARY KEY (mediaID, listID),
     CONSTRAINT addtolist_ibfk_1
-        FOREIGN KEY (mediaID) REFERENCES Media (mediaID)
+        FOREIGN KEY (mediaID) REFERENCES Media (mediaID),
+    CONSTRAINT addtolist_ibfk_2
+        FOREIGN KEY (listID) REFERENCES WatchList (listID)
+            ON DELETE CASCADE
 );
 
 CREATE TABLE Genre
@@ -209,12 +213,11 @@ VALUES ('Disney Plus', 'Standard', 3, 33.00),
        ('Prime Video', 'Standard', 1, 9.99),
        ('Prime Video', 'Premium', 1, 15.99);
 
-INSERT INTO Cost (Duration, TotalCost, MonthlyCost) (
-    SELECT duration, totalCost,
-           totalCost / duration AS monthlyCost
-    FROM Subscription
-    WHERE duration > 0
-);
+INSERT INTO Cost (Duration, TotalCost, MonthlyCost) (SELECT duration,
+                                                            totalCost,
+                                                            totalCost / duration AS monthlyCost
+                                                     FROM Subscription
+                                                     WHERE duration > 0);
 
 INSERT INTO Studio (StudioName, Headquarter, CreationDate)
 VALUES ('Sony Pictures', 'California, USA', '1987-09-21'),

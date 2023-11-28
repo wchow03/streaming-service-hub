@@ -4,6 +4,7 @@ import {getMovies} from "./Movies.tsx";
 import {getShows} from "./Shows.tsx";
 import SearchBar from "./SearchBar.tsx";
 import Filters from "./Filters.tsx";
+import AddToWatchList from "./AddToWatchList.tsx";
 
 
 export default function Media() {
@@ -11,10 +12,26 @@ export default function Media() {
     const userID = window.localStorage.getItem("UserID")!;
 
     const [data, setData] = useState([] as string[]);
-    const [search, setSearch] = useState("");
     const [submit, setSubmit] = useState(false);
     const [mediaType, setMediaType] = useState("movie");
     const [seed, setSeed] = useState(0);
+
+    // Table Helpers
+    // ******************************************************
+    const [active, setActive] = useState<number>(-1);
+    const [mediaID, setMediaID] = useState<number>(-1);
+
+    function handleListItemClick(args: any, index: number) {
+        console.log(args);
+        if (active === index) {
+            setActive(-1);
+            setMediaID(-1);
+            return;
+        } else {
+            setActive(index);
+            setMediaID(args.mediaID);
+        }
+    }
 
     // Filters
     // ******************************************************
@@ -25,20 +42,26 @@ export default function Media() {
 
     // Filtered Columns
     // ******************************************************
-    const [headers, setHeaders] = useState([] as string[]);
-    const [subscribed, setSubscribed] = useState([] as string[]);
+    // const [headers, setHeaders] = useState([] as string[]);
+    const [search, setSearch] = useState("");
+    const [filteredServices, setFilteredServices] = useState([] as string[]);
     const [filteredStudios, setFilteredStudios] = useState([] as string[]);
 
+
+    // Update Filters on change
+    // ******************************************************
     useEffect(() => {
-        createServiceFilter(subscribed);
+        createServiceFilter(filteredServices);
         createStudioFilter(filteredStudios);
-    }, [subscribed, filteredStudios, searchFilter]);
+        createSearchFilter(search);
+    }, [filteredServices, filteredStudios, search]);
 
     useEffect(() => {
         combineFilters();
     }, [serviceFilter, studioFilter, searchFilter]);
 
     useEffect(() => {
+        console.log("Filter: " + filter);
         getMedia(setData, filter);
     }, [filter]);
 
@@ -50,11 +73,12 @@ export default function Media() {
         filters.map((filter: string, index: number) => {
             const logic = index + 1 < filters.length ? " AND " : "";
             if (filter !== "") {
-                combinedFilter = combinedFilter + filter + " AND ";
+                combinedFilter = combinedFilter + "(" + filter + ")" + logic;
             }
         });
 
         setFilter(combinedFilter)
+        console.log(combinedFilter);
     }
 
     // Seed for DynamicCreateTable
@@ -63,14 +87,8 @@ export default function Media() {
         setSeed(seed + 1);
     }, [data]);
 
-    // Initial fetch
-    // ******************************************************
-    useEffect(() => {
-        getMedia(setData, serviceFilter);
-        getHeaders();
-    }, [serviceFilter]);
 
-    // Create service filter
+    // Create SQL WHERE filters
     // ******************************************************
     useEffect(() => {
         fetch(`http://localhost:8080/api/home/subscribedServices/${userID}`)
@@ -78,11 +96,14 @@ export default function Media() {
             .then(result => {
                 const subscribedServices = result.map((service: any) => service.serviceName);
                 console.log("Services: " + subscribedServices);
-                setSubscribed(subscribedServices);
+                setFilteredServices(subscribedServices);
                 return subscribedServices;
             })
             .then((result) => {
                 createServiceFilter(result);
+            })
+            .then(() => {
+                getMedia(setData, filter);
             });
 
     }, []);
@@ -113,14 +134,14 @@ export default function Media() {
         console.log(tempFilter);
     }
 
+    function createSearchFilter(search: string) {
+        setSearchFilter(`mediaName LIKE "%${search}%"`);
+    }
+
     // Fetch on filter change
     // ******************************************************
     useEffect(() => {
-        if (search !== "") {
-            setFilter(`mediaName LIKE "%${search}%" AND (` + serviceFilter + `)`);
-        } else {
-            setFilter(serviceFilter);
-        }
+        combineFilters();
 
         if (submit) {
             getMedia(setData, filter);
@@ -170,30 +191,40 @@ export default function Media() {
         console.log(result);
     }
 
-    function getHeaders(): string[] {
-        let headers: string[] = data.map((item: any) => Object.keys(item)).flat();
-        let noIDHeaders = headers.filter((item: string) => !item.toLowerCase().includes("id"));
-        let uniqueHeaders: string[] = [...new Set(noIDHeaders)];
-        setHeaders(uniqueHeaders);
-        return uniqueHeaders;
-    }
+    // function getHeaders(): string[] {
+    //     let headers: string[] = data.map((item: any) => Object.keys(item)).flat();
+    //     let noIDHeaders = headers.filter((item: string) => !item.toLowerCase().includes("id"));
+    //     let uniqueHeaders: string[] = [...new Set(noIDHeaders)];
+    //     setHeaders(uniqueHeaders);
+    //     return uniqueHeaders;
+    // }
 
     return (
-        <div className={`pb-10 sm:px-6 md:px-24 lg:px-48 flex flex-col gap-3`}>
+        <div className={` flex flex-col gap-3`}>
             <h1 className={`h1 text-white text-center`}>Media</h1>
 
+            <div
+                className={`sticky top-7 flex flex-col gap-2 bg-slate-200 bg-opacity-50 py-4`}>
 
-            <SearchBar values={[search]} handlers={[handleMediaTypeChange, handleSearchChange, handleSubmit]}/>
+                <div className={`flex flex-col gap-2 sm:px-6 md:px-24 lg:px-48`}>
+                    <SearchBar values={[search]} handlers={[handleMediaTypeChange, handleSearchChange, handleSubmit]}/>
 
-            <Filters
-                headers={headers}
-                setFilteredServices={setSubscribed}
-                filteredServices={subscribed}
-                setFilteredStudios={setFilteredStudios}
-                filteredStudios={filteredStudios}
-            />
+                    <Filters
+                        setFilteredServices={setFilteredServices}
+                        filteredServices={filteredServices}
+                        setFilteredStudios={setFilteredStudios}
+                        filteredStudios={filteredStudios}
+                    />
 
-            <DynamicCreateTable key={seed} route={mediaType} data={data}/>
+                    <AddToWatchList mediaID={mediaID}/>
+                </div>
+
+            </div>
+
+
+            <DynamicCreateTable className={`pb-10 sm:px-6 md:px-24 lg:px-48`} handleClick={handleListItemClick}
+                                key={seed} route={mediaType} data={data}
+                                active={active}/>
 
         </div>
     )

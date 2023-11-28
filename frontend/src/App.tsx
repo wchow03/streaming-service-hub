@@ -9,7 +9,7 @@ import WatchList from "./components/watch-list/WatchList.tsx";
 import WatchHistory from "./components/WatchHistory.tsx";
 import {useEffect, useState} from "react";
 import DynamicStreamingService from "./components/dynamic/DynamicStreamingService.tsx";
-import ViewWatchList from "./components/watch-list/ViewWatchList.tsx";
+import WatchListMedia from "./components/watch-list/WatchListMedia.tsx";
 import Media from "./components/media/Media.tsx";
 import AccountSettings from "./components/AccountSettings.tsx";
 
@@ -57,7 +57,7 @@ function App() {
 
                 <Route path={`/service/:serviceName`} element={<DynamicStreamingService/>}></Route>
 
-                <Route path={'/watchlist/:watchlistName/:watchlistID'} element={<ViewWatchList/>}></Route>
+                <Route path={'/watchlist/:watchlistName/:watchlistID'} element={<WatchListMedia/>}></Route>
 
 
                 {/*<Route path={'/Netflix'} element={<DynamicStreamingService serviceName={`Netflix`}/>}></Route>*/}

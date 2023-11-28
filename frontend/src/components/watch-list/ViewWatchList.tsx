@@ -1,46 +1,31 @@
-import {useEffect, useState} from "react";
-import {HomeUser} from "../home-page/HomePage.tsx";
-import {useParams} from "react-router-dom";
-import DynamicCreateTable from "../dynamic/DynamicCreateTable.tsx";
+import {useNavigate} from "react-router-dom";
 
-export default function ViewWatchList() {
-    const [homeUser, setHomeUser] = useState<HomeUser>();
-    const [data, setData] = useState([]);
-    const {watchlistName, watchlistID} = useParams();
+type ViewWatchListProps = {
+    watchListID: number | undefined,
+    watchListName: string | undefined
+}
 
-    useEffect(() => {
-        const user = window.localStorage.getItem("User")!;
-        const email = window.localStorage.getItem("Email")!;
-        const id = window.localStorage.getItem("UserID")!;
-        setHomeUser({"username": JSON.parse(user), "email": JSON.parse(email), "id": JSON.parse(id)});
-    }, []);
+export default function ViewWatchList({watchListID, watchListName}: ViewWatchListProps) {
 
-    useEffect(() => {
-        console.log("ListID: " + watchlistID);
-        if (watchlistID) {
-            getWatchListItems();
+    const navigate = useNavigate();
+
+    function handleSubmit(event: any) {
+        event.preventDefault();
+
+        if (!watchListID) {
+            return;
         }
-    }, [homeUser]);
 
-    function getWatchListItems() {
-
-        fetch(`http://localhost:8080/api/watchlist/${watchlistID}`, {
-            method: "GET",
-        })
-            .then(response => response.json())
-            .then(data => {
-                setData(data);
-            })
-            .catch(error => {
-                console.log(error);
-            });
+        navigate(`/watchlist/${watchListName}/${watchListID}`)
     }
 
-    return (
-        <div>
-            <h1 className={`h1 text-white text-center`}>{watchlistName}</h1>
 
-            <DynamicCreateTable route={``} data={data} className={`sm:px-6 md:px-24 lg:px-48`}/>
-        </div>
-    );
+    return (
+        <button
+            disabled={!watchListID}
+            onClick={handleSubmit}
+            className={`py-1 px-3 font-bold text-white bg-blue-500 w-full rounded disabled:opacity-50 disabled:bg-blue-500 hover:bg-blue-800 transition-colors duration-300`}>
+            View Watchlist
+        </button>
+    )
 }
