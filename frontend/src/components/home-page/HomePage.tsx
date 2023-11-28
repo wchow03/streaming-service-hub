@@ -21,7 +21,7 @@ export default function HomePage() {
 
 
     return (
-        <div className={`flex flex-col gap-4`}>
+        <div className={`flex flex-col gap-4 pb-10`}>
             <Subscribed key={subscribedSeed} reset={reset}/>
             <NotSubscribed key={notSubscribedSeed} reset={reset}/>
         </div>

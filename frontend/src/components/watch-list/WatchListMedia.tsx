@@ -55,7 +55,7 @@ export default function WatchListMedia() {
 
 
     return (
-        <div>
+        <div className={`flex flex-col gap-5 pb-10`}>
             <h1 className={`h1 text-white text-center`}>{watchlistName}</h1>
 
             <DynamicCreateTable
