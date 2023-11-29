@@ -32,7 +32,7 @@ export default function WatchList() {
 
         // const body = {WHERE: `userID = "${homeUser?.id}"`};
         const body = {
-            SELECT: "W.listID, W.listName, W.userID, COUNT(*) AS numberOfMedia",
+            SELECT: "W.listID, W.listName, W.userID, COUNT(A.listID) AS numberOfMedia",
             FROM: "watchList W LEFT JOIN addToList A ON W.listID = A.listID",
             WHERE: `W.userID = "${homeUser?.id}" GROUP BY W.listName, W.listID`
         };
