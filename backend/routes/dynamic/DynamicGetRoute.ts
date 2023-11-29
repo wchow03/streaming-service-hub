@@ -8,9 +8,14 @@ export default function dynamicGetRoute(app, db, route: string, query: string): 
 
         const SELECT: string = req.body.SELECT as string;
         const WHERE: string = req.body.WHERE as string;
+        const FROM: string = req.body.FROM as string;
 
         let thisQuery: string = query;
         console.log("SELECT: " + SELECT);
+
+        if (FROM) {
+            thisQuery = thisQuery.replace(query.substring(query.indexOf("F")), `FROM ${FROM}`);
+        }
 
         if (WHERE) {
             thisQuery += " WHERE " + WHERE;
