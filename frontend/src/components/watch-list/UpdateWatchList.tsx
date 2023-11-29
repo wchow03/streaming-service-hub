@@ -72,7 +72,7 @@ export default function UpdateWatchList({update, watchListID, watchListName}: Up
                     onChange={handleChange}
                     value={watchListName ? name : ""}
                     placeholder={`Enter a name for your watchlist`}
-                    className={`bg-white py-1 flex-grow peer px-1`}
+                    className={`bg-white text-black py-1 flex-grow peer px-1`}
                     type="text"/>
                 <button
                     disabled={watchListID === -1 || watchListID === undefined}

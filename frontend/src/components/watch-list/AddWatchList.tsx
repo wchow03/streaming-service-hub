@@ -16,8 +16,7 @@ export default function AddWatchList({update}: AddWatchListProps) {
 
     function handleSubmit(event: any) {
         event.preventDefault();
-
-        createList(listName, userID, update);
+        createList(listName, userID, update, undefined);
     }
 
     return (

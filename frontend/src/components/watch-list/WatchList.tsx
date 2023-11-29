@@ -27,13 +27,14 @@ export default function WatchList() {
 
     function getWatchList() {
         // SELECT W.listID, W.listName, W.userID, COUNT(*) AS numberOfMedia
-        // FROM addToList A, watchList W WHERE A.listID = W.listID GROUP BY W.listName, W.listID
+        // FROM addToList A, watchList W
+        // WHERE A.listID = W.listID GROUP BY W.listName, W.listID
 
         // const body = {WHERE: `userID = "${homeUser?.id}"`};
         const body = {
-            SELECT: "W.listID, W.listName, W.userID, COUNT(*) AS numberOfMedia",
-            FROM: "addToList A, watchList W",
-            WHERE: `W.userID = "${homeUser?.id}" AND A.listID = W.listID GROUP BY W.listName, W.listID`
+            SELECT: "W.listID, W.listName, W.userID, COUNT(A.listID) AS numberOfMedia",
+            FROM: "watchList W LEFT JOIN addToList A ON W.listID = A.listID",
+            WHERE: `W.userID = "${homeUser?.id}" GROUP BY W.listName, W.listID`
         };
 
         fetch("http://localhost:8080/api/watchlist", {
@@ -45,6 +46,7 @@ export default function WatchList() {
         })
             .then(response => response.json())
             .then(data => {
+                console.log(data);
                 setData(data);
             })
             .catch(error => {
@@ -69,14 +71,21 @@ export default function WatchList() {
 
 
     return (
-        <div className={`px-3 sm:px-6 md:px-24 lg:px-48 flex flex-col gap-3`}>
-            <h1 className={"h1 text-white text-center"}>Watch Lists</h1>
-            {/*<AddWatchList update={getWatchList}/>*/}
-            <DynamicCreateTable route={``} data={data} active={active}
-                                handleClick={handleListItemClick}/>
-            <DeleteWatchList update={getWatchList} watchListID={watchListID}/>
-            <ViewWatchList watchListID={watchListID} watchListName={watchListName}/>
-            <UpdateWatchList update={getWatchList} watchListID={watchListID} watchListName={watchListName}/>
+        <div className={`px-3 sm:px-6 md:px-24 lg:px-48 flex flex-col justify-between `}>
+            <div className={`flex flex-col gap-3 pb-48`}>
+                <h1 className={"h1 text-white text-center"}>Watch Lists</h1>
+                <AddWatchList update={getWatchList}/>
+                <DynamicCreateTable route={``} data={data} active={active}
+                                    handleClick={handleListItemClick}/>
+            </div>
+
+            <div className={`flex flex-col gap-3 fixed bottom-0 left-0 w-full p-4 text-white`}>
+                <DeleteWatchList update={getWatchList} watchListID={watchListID} setActive={setActive}
+                                 setListID={setWatchListID}/>
+                <ViewWatchList watchListID={watchListID} watchListName={watchListName}/>
+                <UpdateWatchList update={getWatchList} watchListID={watchListID} watchListName={watchListName}/>
+            </div>
+
         </div>
     );
 }

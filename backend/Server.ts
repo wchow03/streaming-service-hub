@@ -90,9 +90,9 @@ export class Server {
     // ******************************************************
     private initDB(): void {
         this.db = mysql.createConnection({
-            host: "localhost",
-            user: "root",
-            password: "%mysqlroot%",
+            host: "10.254.0.1",
+            user: "guest",
+            password: "DT8Rbt38###mjR*@",
             database: "streamingservice"
         });
 
@@ -192,7 +192,7 @@ export class Server {
 
             if (columns === "") {
                 columns = "mediaName,rating,studioName,serviceName";
-                console.log("SUCCESS");
+                // console.log("SUCCESS");
             }
 
             let filteredColumns: string[] = columns.split(",");
@@ -200,7 +200,7 @@ export class Server {
                 return `m.${column}`;
             });
 
-            console.log("FILTERED: " + filteredColumns);
+            // console.log("FILTERED: " + filteredColumns);
 
 
             this.db.query(`SELECT l.listID,
@@ -224,7 +224,7 @@ export class Server {
                         if (err) {
                             console.log(err);
                         } else {
-                            console.log("RESULT:" + info);
+                            // console.log("RESULT:" + info);
                             res.json({result: result, info: info});
                         }
                     });
