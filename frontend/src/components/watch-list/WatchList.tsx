@@ -1,7 +1,6 @@
 import {useEffect, useState} from "react";
 import {HomeUser} from "../home-page/HomePage";
 import DynamicCreateTable from "../dynamic/DynamicCreateTable";
-import {useNavigate} from "react-router-dom";
 import AddWatchList from "./AddWatchList.tsx";
 import DeleteWatchList from "./DeleteWatchList.tsx";
 import ViewWatchList from "./ViewWatchList.tsx";
@@ -15,8 +14,6 @@ export default function WatchList() {
 
     const [active, setActive] = useState<number>(-1);
 
-    const navigate = useNavigate();
-
     useEffect(() => {
         const user = window.localStorage.getItem("User")!;
         const email = window.localStorage.getItem("Email")!;
@@ -28,14 +25,16 @@ export default function WatchList() {
         getWatchList();
     }, [homeUser]);
 
-    useEffect(() => {
-        if (watchListID && false) {
-            navigate(`/watchlist/${watchListName}/${watchListID}`)
-        }
-    }, [watchListID]);
-
     function getWatchList() {
-        const body = {WHERE: `userID = "${homeUser?.id}"`};
+        // SELECT W.listID, W.listName, W.userID, COUNT(*) AS numberOfMedia
+        // FROM addToList A, watchList W WHERE A.listID = W.listID GROUP BY W.listName, W.listID
+
+        // const body = {WHERE: `userID = "${homeUser?.id}"`};
+        const body = {
+            SELECT: "W.listID, W.listName, W.userID, COUNT(*) AS numberOfMedia",
+            FROM: "addToList A, watchList W",
+            WHERE: `W.userID = "${homeUser?.id}" AND A.listID = W.listID GROUP BY W.listName, W.listID`
+        };
 
         fetch("http://localhost:8080/api/watchlist", {
             method: "POST",
@@ -70,9 +69,9 @@ export default function WatchList() {
 
 
     return (
-        <div className={`sm:px-6 md:px-24 lg:px-48 flex flex-col gap-3`}>
+        <div className={`px-3 sm:px-6 md:px-24 lg:px-48 flex flex-col gap-3`}>
             <h1 className={"h1 text-white text-center"}>Watch Lists</h1>
-            <AddWatchList update={getWatchList}/>
+            {/*<AddWatchList update={getWatchList}/>*/}
             <DynamicCreateTable route={``} data={data} active={active}
                                 handleClick={handleListItemClick}/>
             <DeleteWatchList update={getWatchList} watchListID={watchListID}/>

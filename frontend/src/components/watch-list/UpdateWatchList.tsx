@@ -62,7 +62,7 @@ export default function UpdateWatchList({update, watchListID, watchListName}: Up
             className={`${!watchListName && "opacity-50"} transition-opacity duration-300`}
             onSubmit={handleSubmit}>
             <div
-                className={`flex flex-row items-center w-full rounded-md focus-within:outline focus-within:outline-blue-500`}>
+                className={`flex flex-col md:flex-row md:items-center w-full md:rounded-md focus-within:outline focus-within:outline-blue-500`}>
                 <label
                     className={`bg-blue-500 text-white rounded-l-md py-1 px-3 border-r peer-focus:outline peer-focus:outline-blue-500`}>
                     Update Watchlist Name
@@ -76,7 +76,7 @@ export default function UpdateWatchList({update, watchListID, watchListName}: Up
                     type="text"/>
                 <button
                     disabled={watchListID === -1 || watchListID === undefined}
-                    className={`bg-blue-500 text-white hover:bg-blue-800 transition-colors duration-300 px-4 py-1 rounded-r-md border-l peer-focus:outline peer-focus:outline-blue-500 disabled:hover:bg-blue-500`}>
+                    className={`bg-blue-500 text-white hover:bg-blue-800 transition-colors duration-300 px-4 py-1 md:rounded-r-md border-l peer-focus:outline peer-focus:outline-blue-500 disabled:hover:bg-blue-500`}>
                     Update
                 </button>
             </div>

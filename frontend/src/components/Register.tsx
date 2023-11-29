@@ -1,5 +1,5 @@
 import {Link, useNavigate} from "react-router-dom";
-import {useEffect, useState} from "react";
+import {useState} from "react";
 
 export default function Register() {
     const [username, setUsername] = useState("");
@@ -7,41 +7,26 @@ export default function Register() {
     const [password, setPassword] = useState("");
     const [birthday, setBirthday] = useState("");
     const navigate = useNavigate();
-    const [emails, setEmails] = useState<string[]>([]);
-
-    useEffect(() => {
-        fetch("http://localhost:8080/api/users")
-            .then(res => res.json())
-            .then((data) => {
-                setEmails(data.map((user: any) => user.email));
-            })
-            .catch(() => alert("Error getting users"));
-    }, []);
 
     const handleSubmit = async (e: any) => {
         e.preventDefault();
-        console.log(emails);
-        console.log(email);
-        if (!emails.includes(email)) {
-            const data = {
-                username: username,
-                password: password,
-                email: email,
-                birthday: birthday
-            }
-            await fetch("http://localhost:8080/api/register", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(data)
-            })
-                .then(() => navigate("/"))
-                .catch(() => alert("Error registering account"));
-        } else {
-            alert("Email already registered");
-        }
+        const body = {
+            user: username,
+            password: password,
+            email: email,
+            birthday: birthday
+        };
+        await fetch("http://localhost:8080/api/authenticate/register", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(body)
+        })
+            .then(() => navigate("/"))
+            .catch(() => alert("Error registering account"));
     }
+
 
     return (
         <div className={"d-flex justify-content-center align-items-center min-vh-100"}>
@@ -54,19 +39,22 @@ export default function Register() {
                 </div>
 
                 <div className={"form-floating mb-3"}>
-                    <input type={"email"} required className={"form-control"} id={"floatingEmail"} placeholder={"bob123@gmail.com"}
+                    <input type={"email"} required className={"form-control"} id={"floatingEmail"}
+                           placeholder={"bob123@gmail.com"}
                            onChange={(e) => setEmail(e.target.value)}/>
                     <label htmlFor={"floatingEmail"}>Email</label>
                 </div>
 
                 <div className={"form-floating mb-3"}>
-                    <input type={"password"} required className={"form-control"} id={"floatingPassword"} placeholder={"password"}
+                    <input type={"password"} required className={"form-control"} id={"floatingPassword"}
+                           placeholder={"password"}
                            onChange={(e) => setPassword(e.target.value)}/>
                     <label htmlFor={"floatingPassword"}>Password</label>
                 </div>
 
                 <div className={"form-floating mb-3"}>
-                    <input type={"date"} required className={"form-control"} id={"floatingBirthday"} placeholder={"birthday"}
+                    <input type={"date"} required className={"form-control"} id={"floatingBirthday"}
+                           placeholder={"birthday"}
                            onChange={(e) => setBirthday(e.target.value)}/>
                     <label htmlFor={"floatingBirthday"}>Birthday</label>
                 </div>

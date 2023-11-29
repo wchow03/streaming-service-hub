@@ -1,11 +1,11 @@
-export function getMovies(setData: (data: any[]) => void, filter: string): string {
+export function dynamicGetMedia(type: string, setData: (data: any[]) => void, filter: string, genre: string[]): string {
     let body = {};
 
     if (filter !== "") {
-        body = {WHERE: filter};
+        body = {WHERE: filter, GENRE: genre};
     }
 
-    fetch("http://localhost:8080/api/media/movies", {
+    fetch(`http://localhost:8080/api/media/${type}`, {
         method: "POST",
         headers: {
             'Content-Type': 'application/json',
@@ -21,5 +21,5 @@ export function getMovies(setData: (data: any[]) => void, filter: string): strin
             throw error;
         });
 
-    return "movie";
+    return type;
 }

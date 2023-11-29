@@ -6,6 +6,17 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import * as console from "console";
 
+import authenticateRegister from "./routes/authentication/AuthenticateRegister";
+import authenticateLogin from "./routes/authentication/AuthenticateLogin";
+import authenticateUpdatePassword from "./routes/authentication/AuthenticateUpdatePassword";
+
+import dynamicGetRoute from "./routes/dynamic/DynamicGetRoute";
+import dynamicDeleteRoute from "./routes/dynamic/DynamicDeleteRoute";
+import dynamicAddRoute from "./routes/dynamic/DynamicAddRoute";
+import dynamicUpdateRoute from "./routes/dynamic/DynamicUpdateRoute";
+
+import dynamicGetMedia from "./routes/dynamic/DynamicGetMedia";
+
 export class Server {
 
     private app: Express;
@@ -21,7 +32,7 @@ export class Server {
         this.tables =
             [
                 "AddToList", "Age", "Cost", "Genre", "Media", "Movie",
-                "Season", "StreamingService", "StreamingUser", "Studio",
+                "Season", "StreamingService", "Studio",
                 "SubscribesTo", "Subscription", "TVShow", "WatchHistory", "Watchlist"
             ];
 
@@ -38,37 +49,36 @@ export class Server {
             let updateRoute: string = "/api/" + table.toLowerCase() + "/update";
 
             // DynamicGetRoute uses POST method (for Body Parsing)
-            this.dynamicGetRoute(route, query);
+            dynamicGetRoute(this.app, this.db, route, query);
 
             // DynamicAddRoute uses POST method
-            this.dynamicAddRoute(addRoute, table);
+            dynamicAddRoute(this.app, this.db, addRoute, table);
 
             // DynamicDeleteRoute uses DELETE method
-            this.dynamicDeleteRoute(deleteRoute, table);
+            dynamicDeleteRoute(this.app, this.db, deleteRoute, table);
 
             // DynamicUpdateRoute uses PUT method
-            this.dynamicUpdateRoute(updateRoute, table);
+            dynamicUpdateRoute(this.app, this.db, updateRoute, table);
 
         });
 
-        this.registerRoute();
-        this.loginRoute();
         this.subscribedRoute();
         this.nonSubscribedRoute();
         this.subscribeRoute();
         this.unsubscribeRoute();
         this.getWatchlistRoute();
-        this.getShows();
-        this.getMovies();
 
+        dynamicGetMedia(this.app, this.db);
+
+        // Update Account routes
         this.updateUsername();
-        this.updatePassword();
         this.updateEmail();
         this.deleteAccount();
 
-        // this.app.get("*", (req: Request, res: Response): void => {
-        //     res.sendFile(path.resolve("./") + "/build/frontend/index.html");
-        // });
+        // Authentication routes
+        authenticateRegister(this.app, this.db);
+        authenticateLogin(this.app, this.db);
+        authenticateUpdatePassword(this.app, this.db);
     }
 
 
@@ -103,203 +113,6 @@ export class Server {
         });
     }
 
-    // /api/:table
-    // ******************************************************
-    private dynamicGetRoute(route: string, query: string): void {
-        this.app.post(route, (req: Request, res: Response): void => {
-
-            const SELECT: string = req.body.SELECT as string;
-            const WHERE: string = req.body.WHERE as string;
-
-            let thisQuery: string = query;
-            console.log("SELECT: " + SELECT);
-
-            if (WHERE) {
-                thisQuery += " WHERE " + WHERE;
-            }
-
-            if (SELECT) {
-                thisQuery = thisQuery.replace("*", SELECT);
-            }
-
-            console.log("QUERY: " + thisQuery);
-
-            this.db.query(thisQuery, (err, result) => {
-                if (err) {
-                    console.error("ERROR: " + err);
-                } else {
-                    res.json(result);
-                }
-            });
-        });
-    }
-
-    private dynamicAddRoute(route: string, table: string): void {
-        this.app.post(route, (req: Request, res: Response): void => {
-            let query: string = this.createAddQuery(table, req.body);
-            console.log("QUERY: " + query);
-            this.db.query(query, (err, result) => {
-                if (err) {
-                    console.error("ERROR: " + err);
-                } else {
-                    res.json(result);
-                }
-            });
-        });
-    }
-
-    private dynamicDeleteRoute(route: string, table: string): void {
-        this.app.delete(route, (req: Request, res: Response): void => {
-            let query: string = this.createDeleteQuery(table, req.body);
-            console.log("QUERY: " + query);
-            this.db.query(query, (err, result) => {
-                if (err) {
-                    console.error("ERROR: " + err);
-                } else {
-                    res.json(result);
-                }
-            });
-        });
-    }
-
-
-    /**
-     *```
-     *  req.body =
-     *      {
-     *          "SET": {
-     *              [columnID]: [newValue],
-     *              ...
-     *          },
-     *          "WHERE": {
-     *              [primaryKeyID]: [ID],
-     *              ...
-     *          }
-     *      }
-     * ```
-     **/
-    private dynamicUpdateRoute(route: string, table: string): void {
-        this.app.put(route, (req: Request, res: Response): void => {
-            let query: string = this.createUpdateQuery(table, req.body);
-            console.log("QUERY: " + query);
-            this.db.query(query, (err, result) => {
-                if (err) {
-                    console.error("ERROR: " + err);
-                } else {
-                    res.json(result);
-                }
-            });
-        });
-    }
-
-    private createUpdateQuery(table: string, params: any): string {
-        let query: string = "UPDATE " + table + " SET ";
-
-        let SET: object = params["SET"];
-        let WHERE: object = params["WHERE"];
-
-        let i: number = 0;
-        for (let key in SET) {
-            if (SET.hasOwnProperty(key)) {
-                if (i === 0) {
-                    query += key + " = '" + SET[key] + "'";
-                } else {
-                    query += ", " + key + " = '" + SET[key] + "'";
-                }
-                i++;
-            }
-        }
-        query += " WHERE ";
-        let j: number = 0;
-        for (let key in WHERE) {
-            if (WHERE.hasOwnProperty(key)) {
-                if (j === 0) {
-                    query += key + " = '" + WHERE[key] + "'";
-                } else {
-                    query += " AND " + key + " = '" + WHERE[key] + "'";
-                }
-                j++;
-            }
-        }
-        return query;
-    }
-
-    private createDeleteQuery(table: string, params: any): string {
-        let query: string = "DELETE FROM " + table + " WHERE ";
-
-        let i: number = 0;
-        for (let key in params) {
-            if (params.hasOwnProperty(key)) {
-                if (i === 0) {
-                    query += key + " = '" + params[key] + "'";
-                } else {
-                    query += " AND " + key + " = '" + params[key] + "'";
-                }
-                i++;
-            }
-        }
-        return query;
-    }
-
-    private createAddQuery(table: string, params: any): string {
-        let query: string = "INSERT INTO " + table + "(";
-
-        let j: number = 0;
-        for (let key in params) {
-            if (params.hasOwnProperty(key)) {
-                if (j === 0) {
-                    query += key;
-                } else {
-                    query += ", " + key;
-                }
-            }
-            j++;
-        }
-
-        query += ") VALUES ("
-        let i: number = 0;
-        for (let key in params) {
-            if (params.hasOwnProperty(key)) {
-                if (i === 0) {
-                    query += "'" + params[key] + "'";
-                } else {
-                    query += ", " + params[key] + "";
-                }
-                i++;
-            }
-        }
-        query += ")";
-        return query;
-    }
-
-    private registerRoute(): void {
-        this.app.post("/api/register", (req: Request, res: Response): void => {
-            const username = req.body.username;
-            const password = req.body.password;
-            const email = req.body.email;
-            const birthday = req.body.birthday;
-
-            this.db.query("INSERT INTO StreamingUser(username, password, email, birthday) VALUES (?,?,?,?)", [username, password, email, birthday], (err, result) => {
-                if (err) {
-                    console.log(err);
-                } else {
-                    res.json(result);
-                }
-            })
-        });
-    }
-
-    private loginRoute(): void {
-        this.app.get("/api/users", (req: Request, res: Response): void => {
-            this.db.query("SELECT userID, username, email, password FROM StreamingUser", (err, result) => {
-                if (err) {
-                    console.log(err);
-                } else {
-                    res.json(result);
-                }
-            });
-        });
-    }
 
     private subscribedRoute(): void {
         this.app.get("/api/home/subscribedServices/:userID", (req: Request, res: Response): void => {
@@ -373,103 +186,50 @@ export class Server {
 
     private getWatchlistRoute(): void {
         this.app.get("/api/watchlist/:listID/", (req: Request, res: Response): void => {
+
+            let columns: string = req.query.columns as string
+            console.log("COLUMNS: " + columns);
+
+            if (columns === "") {
+                columns = "mediaName,rating,studioName,serviceName";
+                console.log("SUCCESS");
+            }
+
+            let filteredColumns: string[] = columns.split(",");
+            filteredColumns = filteredColumns.map((column: string) => {
+                return `m.${column}`;
+            });
+
+            console.log("FILTERED: " + filteredColumns);
+
+
             this.db.query(`SELECT l.listID,
                                   m.mediaID,
-                                  m.mediaName,
-                                  m.rating,
-                                  m.studioName,
-                                  m.serviceName
+                                  ${filteredColumns}
                            FROM AddToList l
                                     JOIN Media m
                                          ON l.mediaID = m.mediaID
-                           WHERE l.listID = ${req.params.listID}
+                           WHERE l.listID = '${req.params.listID}'
             `, (err, result) => {
                 if (err) {
                     console.log(err);
                 } else {
-                    res.json(result);
+                    // res.json(result);
+                    // return;
+                    const query: string = `SELECT COLUMN_NAME
+                                           FROM INFORMATION_SCHEMA.COLUMNS
+                                           WHERE TABLE_NAME = 'AddToList'
+                                              OR TABLE_NAME = 'Media'`;
+                    this.db.query(query, (err, info) => {
+                        if (err) {
+                            console.log(err);
+                        } else {
+                            console.log("RESULT:" + info);
+                            res.json({result: result, info: info});
+                        }
+                    });
                 }
             });
-        });
-    }
-
-    private getShows(): void {
-        this.app.post("/api/media/shows/", (req: Request, res: Response): void => {
-            const WHERE: string = req.body.WHERE as string;
-
-            let query: string = `SELECT m.mediaID,
-                                        m.mediaName,
-                                        m.rating,
-                                        m.studioName,
-                                        m.serviceName,
-                                        s.numberOfSeasons,
-                                        GROUP_CONCAT(g.genreName) AS genres
-                                 FROM Media m
-                                          JOIN TVShow s
-                                               ON m.mediaID = s.mediaID
-                                          JOIN Genre g
-                                               ON m.mediaID = g.mediaID`;
-
-            if (WHERE) {
-                query += " WHERE " + WHERE;
-            }
-
-            query += ` GROUP BY m.mediaID,
-                                  m.mediaName,
-                                  m.rating,
-                                  m.studioName,
-                                  m.serviceName,
-                                  s.numberOfSeasons`;
-
-            this.db.query(query,
-                (err, result) => {
-                    if (err) {
-                        console.log(err);
-                    } else {
-                        res.json(result);
-                    }
-                });
-        });
-    }
-
-    private getMovies(): void {
-        this.app.post("/api/media/movies/", (req: Request, res: Response): void => {
-            const WHERE: string = req.body.WHERE as string;
-
-            let query: string = `SELECT m.mediaID,
-                                        m.mediaName,
-                                        m.rating,
-                                        m.studioName,
-                                        m.serviceName,
-                                        f.version,
-                                        f.length,
-                                        GROUP_CONCAT(g.genreName) AS genres
-                                 FROM Media m
-                                          JOIN Movie f
-                                               ON m.mediaID = f.mediaID
-                                          JOIN Genre g
-                                               ON m.mediaID = g.mediaID`;
-
-            if (WHERE) {
-                query += " WHERE " + WHERE;
-            }
-
-            query += ` GROUP BY m.mediaID,
-                                  m.mediaName,
-                                  m.rating,
-                                  m.studioName,
-                                  m.serviceName,
-                                  f.version,
-                                  f.length`;
-
-            this.db.query(query,
-                (err, result) => {
-                    if (err) {
-                        console.log(err);
-                    } else {
-                        res.json(result);
-                    }
-                });
         });
     }
 
@@ -477,37 +237,26 @@ export class Server {
         this.app.post("/api/account/updateUsername", (req: Request, res: Response): void => {
             const id = req.body.userID;
             const newUsername = req.body.userName;
-           this.db.query(`UPDATE Streaminguser SET userName = '${newUsername}' WHERE userID = ${id}`, (err, result) => {
-               if (err) {
-                   console.log(err);
-                   res.status(400).send({error: "Error updating username"});
-               } else {
-                   res.json(result);
-               }
-           })
-        });
-    }
-
-    private updatePassword(): void {
-        this.app.post("/api/account/updatePassword", (req: Request, res: Response): void => {
-            const id = req.body.userID;
-            const newPassword = req.body.password;
-            this.db.query(`UPDATE Streaminguser SET password = '${newPassword}' WHERE userID = ${id}`, (err, result) => {
+            this.db.query(`UPDATE Streaminguser
+                           SET userName = '${newUsername}'
+                           WHERE userID = ${id}`, (err, result) => {
                 if (err) {
                     console.log(err);
-                    res.status(400).send({error: "Error updating password"});
+                    res.status(400).send({error: "Error updating username"});
                 } else {
                     res.json(result);
                 }
             })
-        })
+        });
     }
 
     private updateEmail(): void {
         this.app.post("/api/account/updateEmail", (req: Request, res: Response): void => {
             const id = req.body.userID;
             const newEmail = req.body.email;
-            this.db.query(`UPDATE Streaminguser SET email = '${newEmail}' WHERE userID = ${id}`, (err, result) => {
+            this.db.query(`UPDATE Streaminguser
+                           SET email = '${newEmail}'
+                           WHERE userID = ${id}`, (err, result) => {
                 if (err) {
                     console.log(err);
                     res.status(400).send({error: "Email already registered"});
@@ -521,7 +270,9 @@ export class Server {
     private deleteAccount(): void {
         this.app.delete("/api/account/delete", (req: Request, res: Response): void => {
             const id = req.body.userID;
-            this.db.query(`DELETE FROM Streaminguser WHERE userID = ${id}`, (err, result) => {
+            this.db.query(`DELETE
+                           FROM Streaminguser
+                           WHERE userID = ${id}`, (err, result) => {
                 if (err) {
                     console.log(err);
                     res.status(400).send({error: "Error deleting account"});
