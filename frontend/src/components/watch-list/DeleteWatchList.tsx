@@ -1,9 +1,11 @@
 type DeleteWatchListProps = {
     update: any,
-    watchListID: number | undefined
+    watchListID: number | undefined,
+    setActive: any,
+    setListID: any
 }
 
-export default function DeleteWatchList({update, watchListID}: DeleteWatchListProps) {
+export default function DeleteWatchList({update, watchListID, setActive, setListID}: DeleteWatchListProps) {
 
     function handleSubmit(event: any) {
         event.preventDefault();
@@ -26,6 +28,8 @@ export default function DeleteWatchList({update, watchListID}: DeleteWatchListPr
             .then(response => response.json())
             .then(data => {
                 console.log(data);
+                setActive(-1);
+                setListID(undefined);
                 update();
             })
             .catch(error => {

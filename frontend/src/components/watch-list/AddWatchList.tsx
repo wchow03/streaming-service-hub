@@ -16,9 +16,7 @@ export default function AddWatchList({update}: AddWatchListProps) {
 
     function handleSubmit(event: any) {
         event.preventDefault();
-        const crypto = require("crypto");
-        const id = crypto.randomUUID();
-        createList(listName, userID, update, id);
+        createList(listName, userID, update, undefined);
     }
 
     return (
