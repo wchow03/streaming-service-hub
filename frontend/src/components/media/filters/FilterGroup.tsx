@@ -4,8 +4,26 @@ import CheckBox from "./CheckBox.tsx";
 // FilterGroup Component
 // ******************************************************
 
+type FilterGroupProps = {
+    label: string,
+    complete: any[],
+    filtered: any[],
+    setFiltered: any,
+    visible: string,
+    setVisible: any,
+    className?: string
+}
 
-export default function FilterGroup({label, complete, filtered, setFiltered, visible, setVisible}: any) {
+export default function FilterGroup(
+    {
+        label,
+        complete,
+        filtered,
+        setFiltered,
+        visible,
+        setVisible,
+        className
+    }: FilterGroupProps) {
 
     function toggleVisible() {
         console.log("Toggling visibility");
@@ -17,10 +35,10 @@ export default function FilterGroup({label, complete, filtered, setFiltered, vis
     }
 
     return (
-        <div className={`relative flex flex-col gap-1 basis-1/3 md:w-1/3`}>
+        <div className={`relative flex flex-col ${className}`}>
             <button
                 type={`button`}
-                className={`flex flex-row gap-2 items-center font-bolds text-black text-sm w-full py-2 px-3 text-left rounded transition-colors duration-300 hover:outline-teal-300 ${visible === label && "outline-teal-600"}`}
+                className={`flex flex-row gap-2 items-center font-bolds text-black text-sm w-full py-2 px-3 text-left rounded transition-colors duration-300 hover:outline-teal-300 ${visible === label && "outline-teal-600"} ${className}`}
                 onClick={toggleVisible}>
                 {label}:
                 <div className={`overflow-x-scroll flex flex-row w-full gap-2 no-scrollbar`}>
