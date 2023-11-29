@@ -90,9 +90,9 @@ export class Server {
     // ******************************************************
     private initDB(): void {
         this.db = mysql.createConnection({
-            host: "localhost",
-            user: "root",
-            password: "%mysqlroot%",
+            host: "10.254.0.1",
+            user: "guest",
+            password: "DT8Rbt38###mjR*@",
             database: "streamingservice"
         });
 

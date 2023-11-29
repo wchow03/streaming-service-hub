@@ -27,7 +27,8 @@ export default function WatchList() {
 
     function getWatchList() {
         // SELECT W.listID, W.listName, W.userID, COUNT(*) AS numberOfMedia
-        // FROM addToList A, watchList W WHERE A.listID = W.listID GROUP BY W.listName, W.listID
+        // FROM addToList A, watchList W
+        // WHERE A.listID = W.listID GROUP BY W.listName, W.listID
 
         // const body = {WHERE: `userID = "${homeUser?.id}"`};
         const body = {
@@ -45,6 +46,7 @@ export default function WatchList() {
         })
             .then(response => response.json())
             .then(data => {
+                console.log(data);
                 setData(data);
             })
             .catch(error => {
