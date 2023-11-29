@@ -25,9 +25,16 @@ export default function WatchList() {
         getWatchList();
     }, [homeUser]);
 
-
     function getWatchList() {
-        const body = {WHERE: `userID = "${homeUser?.id}"`};
+        // SELECT W.listID, W.listName, W.userID, COUNT(*) AS numberOfMedia
+        // FROM addToList A, watchList W WHERE A.listID = W.listID GROUP BY W.listName, W.listID
+
+        // const body = {WHERE: `userID = "${homeUser?.id}"`};
+        const body = {
+            SELECT: "W.listID, W.listName, W.userID, COUNT(*) AS numberOfMedia",
+            FROM: "addToList A, watchList W",
+            WHERE: `W.userID = "${homeUser?.id}" AND A.listID = W.listID GROUP BY W.listName, W.listID`
+        };
 
         fetch("http://localhost:8080/api/watchlist", {
             method: "POST",
