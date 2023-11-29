@@ -32,7 +32,7 @@ export class Server {
         this.tables =
             [
                 "AddToList", "Age", "Cost", "Genre", "Media", "Movie",
-                "Season", "StreamingService", "StreamingUser", "Studio",
+                "Season", "StreamingService", "Studio",
                 "SubscribesTo", "Subscription", "TVShow", "WatchHistory", "Watchlist"
             ];
 
