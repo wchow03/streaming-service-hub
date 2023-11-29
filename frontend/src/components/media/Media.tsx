@@ -1,10 +1,10 @@
 import {useEffect, useState} from "react";
 import DynamicCreateTable from "../dynamic/DynamicCreateTable.tsx";
 import {dynamicGetMedia} from "./GetItems.tsx";
-import SearchBar from "./SearchBar.tsx";
+import SearchBar from "./filters/SearchBar.tsx";
 import Filters from "./filters/Filters.tsx";
 import AddToWatchList from "./AddToWatchList.tsx";
-import {combineFilters, createSearchFilter, createServiceFilter, createStudioFilter} from "./CreateFilters.ts";
+import {combineFilters, createSearchFilter, createServiceFilter, createStudioFilter} from "./filters/CreateFilters.ts";
 
 
 export default function Media() {
