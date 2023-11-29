@@ -37,7 +37,7 @@ export default function WatchListMedia() {
 
         // Build the URL with query parameters
         const urlWithParams = new URL(apiUrl);
-        Object.keys(params).forEach(key => urlWithParams.searchParams.append(key, params[key]));
+        Object.keys(params).forEach(key => urlWithParams.searchParams.append(key, params[key as keyof typeof params]));
 
         // console.log(urlWithParams);
 
