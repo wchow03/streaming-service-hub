@@ -33,8 +33,8 @@ export default function WatchList() {
         // const body = {WHERE: `userID = "${homeUser?.id}"`};
         const body = {
             SELECT: "W.listID, W.listName, W.userID, COUNT(*) AS numberOfMedia",
-            FROM: "addToList A, watchList W",
-            WHERE: `W.userID = "${homeUser?.id}" AND A.listID = W.listID GROUP BY W.listName, W.listID`
+            FROM: "watchList W LEFT JOIN addToList A ON W.listID = A.listID",
+            WHERE: `W.userID = "${homeUser?.id}" GROUP BY W.listName, W.listID`
         };
 
         fetch("http://localhost:8080/api/watchlist", {
