@@ -6,6 +6,8 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import * as console from "console";
 
+import dotenv from 'dotenv';
+
 import authenticateRegister from "./routes/authentication/AuthenticateRegister";
 import authenticateLogin from "./routes/authentication/AuthenticateLogin";
 import authenticateUpdatePassword from "./routes/authentication/AuthenticateUpdatePassword";
@@ -24,6 +26,7 @@ export class Server {
     private tables: string[] = [];
 
     constructor(app: Express) {
+        dotenv.config();  // Load environment variables from .env file
         this.app = app;
         this.app.use(cors());
         this.app.use(express.json());
@@ -89,10 +92,14 @@ export class Server {
     // Connect to DB
     // ******************************************************
     private initDB(): void {
+        const host: string = process.env.DB_HOST as string;
+        const user: string = process.env.DB_USER as string;
+        const password: string = process.env.DB_PASSWORD as string;
+
         this.db = mysql.createConnection({
-            host: "10.254.0.1",
-            user: "guest",
-            password: "DT8Rbt38###mjR*@",
+            host: host,
+            user: user,
+            password: password,
             database: "streamingservice"
         });
 
