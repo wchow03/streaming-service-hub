@@ -186,12 +186,26 @@ export class Server {
 
     private getWatchlistRoute(): void {
         this.app.get("/api/watchlist/:listID/", (req: Request, res: Response): void => {
+
+            let columns: string = req.query.columns as string
+            console.log("COLUMNS: " + columns);
+
+            if (columns === "") {
+                columns = "mediaName,rating,studioName,serviceName";
+                console.log("SUCCESS");
+            }
+
+            let filteredColumns: string[] = columns.split(",");
+            filteredColumns = filteredColumns.map((column: string) => {
+                return `m.${column}`;
+            });
+
+            console.log("FILTERED: " + filteredColumns);
+
+
             this.db.query(`SELECT l.listID,
                                   m.mediaID,
-                                  m.mediaName,
-                                  m.rating,
-                                  m.studioName,
-                                  m.serviceName
+                                  ${filteredColumns}
                            FROM AddToList l
                                     JOIN Media m
                                          ON l.mediaID = m.mediaID
@@ -200,7 +214,20 @@ export class Server {
                 if (err) {
                     console.log(err);
                 } else {
-                    res.json(result);
+                    // res.json(result);
+                    // return;
+                    const query: string = `SELECT COLUMN_NAME
+                                           FROM INFORMATION_SCHEMA.COLUMNS
+                                           WHERE TABLE_NAME = 'AddToList'
+                                              OR TABLE_NAME = 'Media'`;
+                    this.db.query(query, (err, info) => {
+                        if (err) {
+                            console.log(err);
+                        } else {
+                            console.log("RESULT:" + info);
+                            res.json({result: result, info: info});
+                        }
+                    });
                 }
             });
         });

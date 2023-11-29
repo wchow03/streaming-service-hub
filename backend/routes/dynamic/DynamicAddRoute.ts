@@ -8,40 +8,29 @@ export default function dynamicAddRoute(app, db, route: string, table: string): 
         db.query(query, (err, result) => {
             if (err) {
                 console.error("ERROR: " + err);
-            } else {
-                res.json(result);
+                res.status(500).json({error: "Internal Server Error"});
+                return;
             }
+
+            res.status(200).json(result);
         });
     });
 }
 
+
 function createAddQuery(table: string, params: any): string {
-    let query: string = "INSERT INTO " + table + "(";
 
-    let j: number = 0;
-    for (let key in params) {
-        if (params.hasOwnProperty(key)) {
-            if (j === 0) {
-                query += key;
-            } else {
-                query += ", " + key;
-            }
-        }
-        j++;
-    }
+    // Original structure
+    let query: string = `INSERT INTO ${table} (`;
 
-    query += ") VALUES ("
-    let i: number = 0;
-    for (let key in params) {
-        if (params.hasOwnProperty(key)) {
-            if (i === 0) {
-                query += "'" + params[key] + "'";
-            } else {
-                query += ", " + params[key] + "";
-            }
-            i++;
-        }
-    }
-    query += ")";
+    const columns = Object.keys(params);
+    query += columns.join(", ") + ") VALUES (";
+
+    const formattedValues = columns.map((column) => {
+        return typeof params[column] === "string" ? `'${params[column]}'` : params[column];
+    });
+
+    query += formattedValues.join(", ") + ")";
+
     return query;
 }

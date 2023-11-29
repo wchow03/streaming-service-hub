@@ -17,26 +17,7 @@ export default function AddWatchList({update}: AddWatchListProps) {
     function handleSubmit(event: any) {
         event.preventDefault();
 
-        const body = {
-            "listName": listName,
-            "userID": userID
-        };
-
-        fetch("http://localhost:8080/api/watchlist/add", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(body)
-        })
-            .then(response => response.json())
-            .then(data => {
-                console.log(data);
-                update();
-            })
-            .catch(error => {
-                console.log(error);
-            });
+        createList(listName, userID, update);
     }
 
     return (
@@ -61,4 +42,41 @@ export default function AddWatchList({update}: AddWatchListProps) {
         </form>
 
     )
+}
+
+export function createList(listName: string, userID: string, update?: any, listID?: string) {
+
+    type Body = {
+        listName: string,
+        userID: string,
+        listID?: string
+    }
+
+    const body: Body = {
+        "listName": listName,
+        "userID": userID.replace(/"/g, "")
+    };
+
+    if (listID !== undefined) {
+        body["listID"] = `${listID}`;
+    }
+
+    fetch("http://localhost:8080/api/watchlist/add", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(body)
+    })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            if (update !== undefined) {
+                update();
+            }
+        })
+        .catch(error => {
+            console.log(error);
+        });
+
 }

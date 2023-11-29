@@ -48,7 +48,7 @@ export default function Filters(
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, []);
-    
+
 
     // Fetch all services
     // ******************************************************
@@ -141,19 +141,23 @@ export default function Filters(
                              complete={services}
                              filtered={filteredServices}
                              setFiltered={setFilteredServices}
-                             visible={visible} setVisible={setVisible}/>
+                             visible={visible} setVisible={setVisible}
+                             className={`gap-1 basis-1/3 md:w-1/3`}
+                />
 
                 <FilterGroup label={`Studios`}
                              complete={studios}
                              filtered={filteredStudios}
                              setFiltered={setFilteredStudios}
-                             visible={visible} setVisible={setVisible}/>
+                             visible={visible} setVisible={setVisible}
+                             className={`gap-1 basis-1/3 md:w-1/3`}/>
 
                 <FilterGroup label={`Genres`}
                              complete={genres}
                              filtered={filteredGenres}
                              setFiltered={setFilteredGenres}
-                             visible={visible} setVisible={setVisible}/>
+                             visible={visible} setVisible={setVisible}
+                             className={`gap-1 basis-1/3 md:w-1/3`}/>
 
             </form>
         </div>
