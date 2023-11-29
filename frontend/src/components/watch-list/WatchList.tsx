@@ -1,7 +1,6 @@
 import {useEffect, useState} from "react";
 import {HomeUser} from "../home-page/HomePage";
 import DynamicCreateTable from "../dynamic/DynamicCreateTable";
-import {useNavigate} from "react-router-dom";
 import AddWatchList from "./AddWatchList.tsx";
 import DeleteWatchList from "./DeleteWatchList.tsx";
 import ViewWatchList from "./ViewWatchList.tsx";
@@ -15,8 +14,6 @@ export default function WatchList() {
 
     const [active, setActive] = useState<number>(-1);
 
-    const navigate = useNavigate();
-
     useEffect(() => {
         const user = window.localStorage.getItem("User")!;
         const email = window.localStorage.getItem("Email")!;
@@ -28,11 +25,6 @@ export default function WatchList() {
         getWatchList();
     }, [homeUser]);
 
-    useEffect(() => {
-        if (watchListID && false) {
-            navigate(`/watchlist/${watchListName}/${watchListID}`)
-        }
-    }, [watchListID]);
 
     function getWatchList() {
         const body = {WHERE: `userID = "${homeUser?.id}"`};
