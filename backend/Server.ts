@@ -73,6 +73,7 @@ export class Server {
 
         dynamicGetMedia(this.app, this.db);
         this.getNestedAggregateGroupBy();
+        this.getAggregationWithHaving();
 
         // Update Account routes
         this.updateUsername();
@@ -293,7 +294,18 @@ export class Server {
 
     private getNestedAggregateGroupBy(): void {
         this.app.get("/api/media/nestedAggregateGroupBy/:numRows", (req: Request, res: Response): void => {
-            const n = req.params.numRows;
+            const n: number = req.params.numRows as unknown as number;
+
+            if (isNaN(n)) {
+                res.status(400).send({error: "Number of rows is not a number"});
+                return;
+            }
+
+            if (n < 0 || n > 10) {
+                res.status(400).send({error: "Number of rows is out of range"});
+                return;
+            }
+
             this.db.query(`SELECT M.studioName, ROUND(AVG(M.rating), 2) AS avgRating
                            FROM Media M
                            GROUP BY M.studioName
@@ -301,7 +313,38 @@ export class Server {
                                   (SELECT COUNT(*) FROM Media M2 WHERE M.studioName = M2.studioName)`, (err, result) => {
                 if (err) {
                     console.error(err);
-                    res.status(400).send({error: err.sqlMessage});
+                    res.status(500).send({error: err.sqlMessage});
+                } else {
+                    res.json(result);
+                }
+            })
+        });
+    }
+
+    private getAggregationWithHaving(): void {
+        this.app.get("/api/media/aggregationWithHaving/:minRating", (req: Request, res: Response): void => {
+            const minRating: number = req.params.minRating as unknown as number;
+
+            console.log("MIN RATING: " + minRating);
+
+            if (isNaN(minRating)) {
+                res.status(400).send({error: "Rating is not a number"});
+                return;
+            }
+
+            if (minRating < 0 || minRating > 10) {
+                res.status(400).send({error: "Rating is out of range"});
+                return;
+            }
+
+            this.db.query(`SELECT studioName, MIN(rating) as minRating, MAX(rating) as maxRating
+                           FROM Media
+                           WHERE rating >= ${minRating}
+                           GROUP BY studioName
+                           HAVING COUNT(*) > 1`, (err, result) => {
+                if (err) {
+                    console.error(err);
+                    res.status(500).send({error: err.sqlMessage});
                 } else {
                     res.json(result);
                 }

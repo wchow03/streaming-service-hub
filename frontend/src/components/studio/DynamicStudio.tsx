@@ -1,6 +1,6 @@
 import {Link, useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
-import DynamicCreateTable from "./DynamicCreateTable";
+import DynamicCreateTable from "../dynamic/DynamicCreateTable";
 
 export default function DynamicStudio() {
 

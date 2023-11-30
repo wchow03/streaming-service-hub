@@ -13,7 +13,7 @@ import WatchListMedia from "./components/watch-list/WatchListMedia.tsx";
 import Media from "./components/media/Media.tsx";
 import AccountSettings from "./components/AccountSettings.tsx";
 import Studio from "./components/studio/Studio.tsx";
-import DynamicStudio from "./components/dynamic/DynamicStudio.tsx";
+import DynamicStudio from "./components/studio/DynamicStudio.tsx";
 
 function App() {
 
@@ -63,12 +63,6 @@ function App() {
 
                 <Route path={'/watchlist/:watchlistName/:watchlistID'} element={<WatchListMedia/>}></Route>
 
-
-                {/*<Route path={'/Netflix'} element={<DynamicStreamingService serviceName={`Netflix`}/>}></Route>*/}
-                {/*<Route path={'/Disney Plus'} element={<DynamicStreamingService serviceName={`Disney Plus`}/>}></Route>*/}
-                {/*<Route path={'/Max'} element={<Max/>}></Route>*/}
-                {/*<Route path={'/Prime Video'} element={<PrimeVideo/>}></Route>*/}
-                {/*<Route path={'/Crave TV'} element={<CraveTV/>}></Route>*/}
             </Route>
         </Routes>
     );

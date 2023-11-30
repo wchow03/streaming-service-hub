@@ -3,7 +3,7 @@ import {useState} from "react";
 
 type DeleteMediaFromListProps = {
     update: any,
-    mediaID: number | undefined,
+    mediaID: string | number | undefined,
     listID: string | number | undefined,
     className?: string
 }
@@ -51,6 +51,8 @@ export default function DeleteMediaFromList({update, mediaID, listID, className}
                 setAlertVisible(false);
             }, 3000);
 
+            handleClose();
+
         }
 
         deleteMediaFromList(mediaID.toString(), listID.toString(), update, callback);
@@ -65,7 +67,7 @@ export default function DeleteMediaFromList({update, mediaID, listID, className}
             </Alert>
 
             <button
-                disabled={!mediaID}
+                disabled={mediaID === -1}
                 onClick={() => setVisible(true)}
                 className={`${className} shadow-2xl p-3 font-bold text-white bg-red-500 rounded-full disabled:opacity-50 disabled:bg-red-500 hover:bg-red-800 transition-colors duration-300`}>
 
