@@ -62,8 +62,8 @@ export default function MainNavbar() {
                         <Link className={"text-white hover:opacity-70"} to={"/media"} onClick={hide}>Media</Link>
                         <Link className={"text-white hover:opacity-70"} to={"/watchList"}
                               onClick={hide}>Watch&nbsp;Lists</Link>
-                        <Link className={"text-white hover:opacity-70"} to={"/watchHistory"}
-                              onClick={hide}>Watch&nbsp;History</Link>
+                        <Link className={"text-white hover:opacity-70"} to={"/studio"}
+                              onClick={hide}>Studios</Link>
                     </div>
 
                     <Link className={"text-white hover:opacity-70"} to={"/accountSettings"}

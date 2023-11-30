@@ -12,6 +12,7 @@ import DynamicStreamingService from "./components/dynamic/DynamicStreamingServic
 import WatchListMedia from "./components/watch-list/WatchListMedia.tsx";
 import Media from "./components/media/Media.tsx";
 import AccountSettings from "./components/AccountSettings.tsx";
+import Studio from "./components/studio/Studio.tsx";
 
 function App() {
 
@@ -52,8 +53,9 @@ function App() {
                 <Route path={'/home'} element={<HomePage/>}></Route>
                 <Route path={'/watchlist'} element={<WatchList/>}></Route>
                 <Route path={'/watchhistory'} element={<WatchHistory/>}></Route>
-                <Route path={'/accountSettings'} element={<AccountSettings />} /><Route />
+                <Route path={'/accountSettings'} element={<AccountSettings/>}/><Route/>
                 <Route path={'/media'} element={<Media/>}></Route>
+                <Route path={'/studio'} element={<Studio/>}></Route>
 
                 <Route path={`/service/:serviceName`} element={<DynamicStreamingService/>}></Route>
 

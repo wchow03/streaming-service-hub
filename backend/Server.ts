@@ -292,16 +292,16 @@ export class Server {
     }
 
     private getNestedAggregateGroupBy(): void {
-        this.app.get("/api/media/nestedAggregateGroupBy", (req: Request, res: Response): void => {
-            const id = req.body.userID;
-            const n = req.body.numRows;
+        this.app.get("/api/media/nestedAggregateGroupBy/:numRows", (req: Request, res: Response): void => {
+            const n = req.params.numRows;
             this.db.query(`SELECT M.studioName, ROUND(AVG(M.rating), 2) AS avgRating
-                            FROM Media M
-                            GROUP BY M.studioName
-                            HAVING ${n} <= (SELECT COUNT(*) FROM Media M2 WHERE M.studioName = M2.studioName)`, (err, result) => {
+                           FROM Media M
+                           GROUP BY M.studioName
+                           HAVING ${n} <=
+                                  (SELECT COUNT(*) FROM Media M2 WHERE M.studioName = M2.studioName)`, (err, result) => {
                 if (err) {
-                    console.log(err);
-                    res.status(400).send({error: "Error deleting account"});
+                    console.error(err);
+                    res.status(400).send({error: err.sqlMessage});
                 } else {
                     res.json(result);
                 }

@@ -1,4 +1,4 @@
-export default function DynamicCreateTable({setRoute}: { setRoute: any }) {
+export default function SelectTable({setRoute}: { setRoute: any }) {
 
     function handleSelectChange(event: any) {
         setRoute(event.target.value);

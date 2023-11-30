@@ -30,6 +30,7 @@ export default function dynamicGetRoute(app, db, route: string, query: string): 
         db.query(thisQuery, (err, result) => {
             if (err) {
                 console.error("ERROR: " + err);
+                res.status(400).send("Error: " + err.sqlMessage);
             } else {
                 res.json(result);
             }
