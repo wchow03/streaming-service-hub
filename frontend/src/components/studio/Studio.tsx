@@ -132,7 +132,7 @@ export default function Studio() {
                         className={`uppercase tracking-wide text-white text-xs font-bold bg-slate-600 p-2 rounded text-center`}
                         htmlFor="studioName">Search for the minimum rating of a media produced by each studio with at
                         least
-                        the following minimum average</label>
+                        the following minimum rating</label>
                     <input
                         required={true}
 
