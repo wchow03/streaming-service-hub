@@ -7,8 +7,7 @@ export default function dynamicAddRoute(app, db, route: string, table: string): 
         console.log("QUERY: " + query);
         db.query(query, (err, result) => {
             if (err) {
-                console.error("ERROR: " + err);
-                res.status(500).json({error: "Internal Server Error"});
+                res.status(400).json({error: err.sqlMessage});
                 return;
             }
 

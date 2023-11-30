@@ -110,7 +110,9 @@ export default function WatchListMedia() {
             <DeleteMediaFromList
                 update={getWatchListItems}
                 mediaID={mediaID}
-                listID={watchlistID}/>
+                listID={watchlistID}
+                className={`fixed bottom-6 right-6 grid text-white justify-items-end`}
+            />
         </div>
     );
 }

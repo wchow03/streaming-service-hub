@@ -71,19 +71,26 @@ export default function WatchList() {
 
 
     return (
-        <div className={`px-3 sm:px-6 md:px-24 lg:px-48 flex flex-col justify-between `}>
+        <div className={`px-3 sm:px-6 md:px-24 lg:px-48 flex flex-col justify-between`}>
             <div className={`flex flex-col gap-3 pb-48`}>
                 <h1 className={"h1 text-white text-center"}>Watch Lists</h1>
-                <AddWatchList update={getWatchList}/>
                 <DynamicCreateTable route={``} data={data} active={active}
                                     handleClick={handleListItemClick}/>
             </div>
 
-            <div className={`flex flex-col gap-3 fixed bottom-0 left-0 w-full p-4 text-white`}>
+            {/*<Alert type={AlertType.Success} duration={500}>*/}
+            {/*    test*/}
+            {/*</Alert>*/}
+
+            <div className={`fixed bottom-0 right-0 grid gap-3 p-4 text-white justify-items-end`}>
+                <AddWatchList update={getWatchList}/>
+
+                <UpdateWatchList update={getWatchList} watchListID={watchListID} watchListName={watchListName}/>
+
+                <ViewWatchList watchListID={watchListID} watchListName={watchListName} className={``}/>
+
                 <DeleteWatchList update={getWatchList} watchListID={watchListID} setActive={setActive}
                                  setListID={setWatchListID}/>
-                <ViewWatchList watchListID={watchListID} watchListName={watchListName}/>
-                <UpdateWatchList update={getWatchList} watchListID={watchListID} watchListName={watchListName}/>
             </div>
 
         </div>
