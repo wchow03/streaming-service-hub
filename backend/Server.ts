@@ -247,8 +247,8 @@ export class Server {
             const id = req.body.userID;
             const newUsername = req.body.userName;
             this.db.query(`UPDATE Streaminguser
-                           SET userName = '${newUsername}'
-                           WHERE userID = ${id}`, (err, result) => {
+                           SET userName = ?
+                           WHERE userID = ${id}`, [newUsername], (err, result) => {
                 if (err) {
                     console.log(err);
                     res.status(400).send({error: "Error updating username"});
@@ -264,8 +264,8 @@ export class Server {
             const id = req.body.userID;
             const newEmail = req.body.email;
             this.db.query(`UPDATE Streaminguser
-                           SET email = '${newEmail}'
-                           WHERE userID = ${id}`, (err, result) => {
+                           SET email = ?
+                           WHERE userID = ${id}`, [newEmail], (err, result) => {
                 if (err) {
                     console.log(err);
                     res.status(400).send({error: "Email already registered"});
