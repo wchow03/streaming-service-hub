@@ -1,11 +1,14 @@
 import {useEffect, useState} from "react";
 import DynamicCreateTable from "../dynamic/DynamicCreateTable.tsx";
+import {useNavigate} from "react-router-dom";
 
 export default function Studio() {
 
     const [data, setData] = useState([]);
     const [formData, setFormData] = useState({} as any);
     const userID = window.localStorage.getItem("UserID")!;
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         setFormData({
@@ -41,6 +44,11 @@ export default function Studio() {
         });
     }
 
+    function handleStudioClick(args: any, index: number) {
+        console.log(index);
+        navigate(`/studio/${args.studioName}`);
+    }
+
 
     return (
         <div className={`text-white xs:px-3 sm:px-6 md:px-24 lg:px-48`}>
@@ -72,7 +80,7 @@ export default function Studio() {
 
             </form>
 
-            <DynamicCreateTable data={data}/>
+            <DynamicCreateTable data={data} handleClick={handleStudioClick}/>
 
         </div>
     )

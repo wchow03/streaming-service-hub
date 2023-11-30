@@ -13,6 +13,7 @@ import WatchListMedia from "./components/watch-list/WatchListMedia.tsx";
 import Media from "./components/media/Media.tsx";
 import AccountSettings from "./components/AccountSettings.tsx";
 import Studio from "./components/studio/Studio.tsx";
+import DynamicStudio from "./components/dynamic/DynamicStudio.tsx";
 
 function App() {
 
@@ -58,6 +59,7 @@ function App() {
                 <Route path={'/studio'} element={<Studio/>}></Route>
 
                 <Route path={`/service/:serviceName`} element={<DynamicStreamingService/>}></Route>
+                <Route path={`/studio/:studioName`} element={<DynamicStudio/>}></Route>
 
                 <Route path={'/watchlist/:watchlistName/:watchlistID'} element={<WatchListMedia/>}></Route>
 
