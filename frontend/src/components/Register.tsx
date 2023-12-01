@@ -93,7 +93,7 @@ export default function Register() {
                 {/*</div>*/}
 
                 <div className={"form-floating mb-3"}>
-                    <DatePicker onChange={handleDateChange}/>
+                    <DatePicker onChange={handleDateChange} placeholder={"Birthday"}/>
                 </div>
 
                 <button type={"submit"} className={"btn btn-primary w-100 mb-3"}>Register</button>

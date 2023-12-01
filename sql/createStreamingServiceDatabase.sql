@@ -678,7 +678,3 @@ VALUES (6, 1, 7),
        (50, 4, 20),
        (50, 5, 20),
        (50, 6, 20);
-
-
-# INSERT INTO StreamingUser (userName, password, email, birthday)
-# VALUES ('sim', 'sim', 'sim@gmail.com', '2000-01-01')

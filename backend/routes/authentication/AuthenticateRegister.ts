@@ -19,15 +19,21 @@ export default function authenticateRegister(app, db): void {
         const hashedPassword = crypto.createHash('sha512').update(password + salt).digest('hex');
 
 
+        // const query: string =
+        //     `
+        //         INSERT INTO StreamingUser (userName, email, birthday, passwordSalt, passwordHash)
+        //         VALUES ('${username}', '${email}', '${birthday}', '${salt}', '${hashedPassword}');
+        //     `;
+
         const query: string =
             `
                 INSERT INTO StreamingUser (userName, email, birthday, passwordSalt, passwordHash)
-                VALUES ('${username}', '${email}', '${birthday}', '${salt}', '${hashedPassword}');
+                VALUES (?, ?, ?, ?, ?);
             `;
 
         console.log(query);
 
-        db.query(query, (err, result) => {
+        db.query(query, [username, email, birthday, salt, hashedPassword], (err, result) => {
             if (err) {
                 console.log(err);
                 res.status(400).send({error: "Error authenticating"});
