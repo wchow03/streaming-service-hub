@@ -59,8 +59,8 @@ export default function Register() {
             {emailRegisteredError &&
                 <Alert banner closable message="Error registering account, email may already be registered"
                        type="error"/>}
-            <div className={"d-flex justify-content-center align-items-center min-vh-100"}>
-                <h1 className={"h1 text-white text-center mr-20"}>Streaming Service</h1>
+            <div className={"flex-col md:flex-row flex gap-20 justify-content-center align-items-center min-vh-100"}>
+                <h1 className={"h1 text-white text-center"}>Streaming Service</h1>
                 <form onSubmit={handleSubmit} className={"loginForm"}>
                     <div className={"form-floating mb-3"}>
                         <input type={"text"} required className={"form-control"} id={"floatingUser"}

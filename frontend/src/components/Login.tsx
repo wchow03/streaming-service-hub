@@ -82,8 +82,8 @@ export default function Login() {
 
 
     return (
-        <div className={"d-flex justify-content-center align-items-center min-vh-100"}>
-            <h1 className={"h1 text-white text-center mr-20"}>Streaming Service</h1>
+        <div className={"flex flex-col md:flex-row gap-20 justify-content-center align-items-center min-vh-100"}>
+            <h1 className={"h1 text-white text-center"}>Streaming Service</h1>
             <form onSubmit={handleSubmit} className={"loginForm"}>
                 <div className={"form-floating mb-3"}>
                     <input type={"email"} required className={"form-control"} id={"floatingEmail"}

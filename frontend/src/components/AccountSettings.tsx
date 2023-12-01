@@ -120,7 +120,7 @@ export default function AccountSettings() {
 
     return (
         <>
-            <div className={"container justify-content-center align-items-center text-center"}>
+            <div className={"container justify-content-center align-items-center text-center sm:mr-5"}>
                 {usernameSuccess && <Alert message="Username successfully changed" type="success"/>}
                 {usernameError && <Alert message="Error changing username" type="error"/>}
                 {passwordSuccess && <Alert message="Password successfully changed" type="success"/>}
