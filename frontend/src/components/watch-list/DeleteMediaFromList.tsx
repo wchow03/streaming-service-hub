@@ -94,7 +94,7 @@ export default function DeleteMediaFromList({update, mediaID, listID, className}
                         className={`flex flex-col gap-4 w-full rounded-md`}>
                         <label
                             className={`text-left text-black font-bold`}>
-                            Delete Watchlist
+                            Delete Media From Watchlist
                         </label>
                         <div className={`flex flex-row gap-2`}>
                             <button
