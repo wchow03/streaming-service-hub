@@ -1,4 +1,4 @@
-## A Streaming Service Hub Created for a Relational Databases Course
+# A Streaming Service Hub Created for a Relational Databases Course
 
 ### Application created with React.js for the front-end, Express.js for connecting front-end to back-end, and Node.js for managing packages
 
